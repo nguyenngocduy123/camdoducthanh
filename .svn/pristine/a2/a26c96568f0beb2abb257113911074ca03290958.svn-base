@@ -1,0 +1,197 @@
+﻿
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model CamDoAnhTu.Models.Customer
+
+@section css{
+
+    <link href="~/Assets/Simple-Date-Picker-for-Bootstrap/css/datepicker.css" rel="stylesheet" />
+}
+
+@section js{
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+
+    <script type="text/javascript">
+        $("#frmaAddCustomer").validate({
+            rules: {
+                Code: {
+                    required: true
+                },
+                Name: {
+                    required: true
+                },
+                Phone: {
+                    required: true,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 11
+                },
+                Address: {
+                    required: true
+                },
+                Price: {
+                    required: true,
+                    number: true
+                },
+                Loan: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                Code: {
+                    required: 'Chưa nhập mã số'
+                },
+                Name: {
+                    required: 'Chưa nhập tên khách hàng'
+                },
+                Phone: {
+                    required: 'Chưa nhập số điện thoại',
+                    number: 'Nhập sđt không đúng định dạng',
+                    minlength: 'Ít nhất 10 số',
+                    maxlength: 'Nhiều nhất 11 số'
+                },
+                Address: {
+                    required: 'Chưa nhập địa chỉ'
+                },
+                Price: {
+                    required: 'Chưa nhập số tiền phải trả trong 1 ngày',
+                    number: 'Phải là số'
+                },
+                Loan: {
+                    required: 'Chưa nhập tổng nợ',
+                    number: 'Phải là số'
+                }
+
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            //errorPlacement: function (error, element) {
+            //    var alertDiv = $('.alert-warning', $('#registerForm'));
+            //    error.appendTo(alertDiv);
+            //},
+
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                //label.closest('.form-group').removeClass('has-success');
+
+                //var name = label.attr('for');
+                //$('[name=' + name + ']').closest('.form-group').removeClass('has-error');
+                label.remove();
+            }
+
+        });
+
+
+    </script>
+
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="~/autoNumeric-master/autoNumeric-master/autoNumeric.js"></script>
+    <script>
+        jQuery(function($) {
+            $('.auto').autoNumeric('init', { vMax: '99999999999999999' });
+        });
+
+    </script>
+
+    <script type="text/javascript">
+        $('form').submit(function () {
+            var form = $(this);
+            $('input').each(function (i) {
+                var self = $(this);
+                try {
+                    var v = self.autoNumeric('get');
+                    self.autoNumeric('destroy');
+                    self.val(v);
+                } catch (err) {
+                    console.log("Not an autonumeric field: " + self.attr("name"));
+                }
+            });
+            return true;
+        });
+    </script>
+
+}
+
+<a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+    <i class="fa fa-mail-reply"></i>Trang khách hàng
+</a>
+<h2 style="font-size: 30px; color: red;border: firebrick">Chỉnh sửa thông tin khách hàng</h2>
+<form class="form-horizontal" method="post" action="" id="frmaAddCustomer">
+    <input type="hidden" class="form-control" id="txtStartDate" name="StartDate" value="@DateTime.Now" />
+    <input type="hidden" class="form-control" id="txtDayPaids" name="DayPaids" value="@Model.DayPaids" />
+    <input type="hidden" class="form-control" id="txtAmountPaid" name="AmountPaid" value="@Model.AmountPaid" />
+    <input type="hidden" class="form-control" id="txtRemainingAmount" name="RemainingAmount" value="@Model.RemainingAmount" />
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="alert alert-warning alert-dismissable hidden" role="alert">
+                <button type="button" class="close" data-dissmiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Mã số:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtCode" name="Code" value="@Model.Code" />
+        </div>
+        <label class="col-sm-2 control-label">Tên khách hàng:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtName" name="Name" value="@Model.Name" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Điện thoại:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtPhone" name="Phone" value="@Model.Phone" />
+        </div>
+        <label class="col-sm-2 control-label">Địa chỉ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtAddress" name="Address" value="@Model.Address" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Tổng nợ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control auto" id="txtLoan" name="Loan" value="@Model.Loan"/>
+            
+        </div>
+        <label class="col-sm-2 control-label">Số tiền trả trong 1 ngày:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control auto" name="Price" value="@Model.Price" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <button type="submit" id="save" class="btn btn-danger">
+                <i class="fa fa-check"></i>&nbsp;Lưu
+            </button>
+        </div>
+    </div>
+</form>
+@*<form class="form-horizontal" method="post" action="@Url.Action("Addday","Home")" id="addDay" enctype="multipart/form-data">
+        <input type="hidden" id="txtIDCus" name="IDCus" value="@Model.Code" />
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Ngày đóng:</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control datepicker" id="txtDate" name="Date" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-10 col-sm-offset-2">
+                <button type="submit" class="btn btn-success">
+                    <i class="fa fa-check"></i>&nbsp;Thêm
+                </button>
+            </div>
+        </div>
+    </form>*@
+

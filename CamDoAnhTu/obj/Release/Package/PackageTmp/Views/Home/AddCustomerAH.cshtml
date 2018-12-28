@@ -1,0 +1,248 @@
+﻿@using CamDoAnhTu.Models
+@model Customer
+
+
+@{
+    ViewBag.Title = "AddCustomer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section css{
+    <link href="~/Assets/bootstrap-fileinput-master/css/fileinput.css" rel="stylesheet" />
+    <link href="~/Assets/Simple-Date-Picker-for-Bootstrap/css/datepicker.css" rel="stylesheet" />
+    <link href="~/Assets/silviomoreto-bootstrap-select-a8ed49e/dist/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/Assets/jquery-ui-1.11.2.custom/jquery-ui.css" rel="stylesheet" />
+}
+
+@section js{
+
+    <script src="~/Assets/Simple-Date-Picker-for-Bootstrap/js/bootstrap-datepicker.js"></script>
+    <script src="~/Assets/jquery.min.js"></script>
+    <script src="~/autoNumeric-master/autoNumeric-master/autoNumeric.js"></script>
+    <script src="~/Assets/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
+    <script src="~/Assets/bootstrap-fileinput-master/js/fileinput.min.js"></script>
+    <script src="~/Assets/silviomoreto-bootstrap-select-a8ed49e/dist/js/bootstrap-select.min.js"></script>
+
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script>
+        jQuery(function ($) {
+            $('.auto').autoNumeric('init');
+        });
+    </script>
+
+    <script type="text/javascript">
+        $('form').submit(function () {
+            var form = $(this);
+            $('input').each(function (i) {
+                var self = $(this);
+                try {
+                    var v = self.autoNumeric('get');
+                    self.autoNumeric('destroy');
+                    self.val(v);
+                } catch (err) {
+                    console.log("Not an autonumeric field: " + self.attr("name"));
+                }
+            });
+            return true;
+        });
+    </script>
+
+    <script type="text/javascript">
+        $.validator.addMethod("imageOnly", function (value, element) {
+            return this.optional(element) || /^.+\.(jpg|JPG|png|PNG)$/.test(value);
+        });
+
+        $.validator.addMethod("codeCheck", function (value, element) {
+            var isSuccess = false;
+            $.ajax({
+                type: 'GET',
+                contentType: 'application/json; charset=utf-8',
+                url: '/Home/GetUserByUsername',
+                data: { uname: value },
+                success:
+                    function (data) {
+                        if (data == 1) {
+                            isSuccess = true;
+                        } else {
+                            isSuccess = false;
+                        }
+                    },
+                async: false
+            });
+            return isSuccess;
+        });
+
+        $("#frmaAddCustomer").validate({
+            rules: {
+                Code: {
+                    required: true,
+                    codeCheck: true
+                },
+                Name: {
+                    required: true
+                },
+                fuMain: {
+                    imageOnly: true
+                },
+                Phone: {
+                    required: true,
+                    number: true,
+                    minlength: 10,
+                    maxlength: 11
+                },
+                Address: {
+                    required: true
+                },
+                Price: {
+                    required: true,
+                    number: true
+                },
+                Loan: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                Code: {
+                    required: 'Chưa nhập mã số',
+                    codeCheck: 'Mã số này đã tồn tại'
+                },
+                Name: {
+                    required: 'Chưa nhập tên khách hàng'
+                },
+                fuMain: {
+                    imageOnly: 'Không đúng định dạng hình ảnh'
+                },
+                Phone: {
+                    required: 'Chưa nhập số điện thoại',
+                    number: 'Nhập sđt không đúng định dạng',
+                    minlength: 'Ít nhất 10 số',
+                    maxlength: 'Nhiều nhất 11 số'
+                },
+                Address: {
+                    required: 'Chưa nhập địa chỉ'
+                },
+                Price: {
+                    required: 'Chưa nhập số tiền phải trả trong 1 ngày',
+                    number: 'Phải là số'
+                },
+                Loan: {
+                    required: 'Chưa nhập tổng nợ',
+                    number: 'Phải là số'
+                }
+
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            //errorPlacement: function (error, element) {
+            //    var alertDiv = $('.alert-warning', $('#registerForm'));
+            //    error.appendTo(alertDiv);
+            //},
+
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                //label.closest('.form-group').removeClass('has-success');
+
+                //var name = label.attr('for');
+                //$('[name=' + name + ']').closest('.form-group').removeClass('has-error');
+                label.remove();
+            }
+
+        });
+
+        $('.selectpicker').selectpicker();
+        $('input[type=file]').bootstrapFileInput();
+
+        $("#fuMain").fileinput({
+            'allowedFileExtensions': ['jpg', 'png', 'gif']
+        });
+
+    </script>
+
+    <script>
+
+        $(function () {
+            $("#txtStartDate").datepicker({ dateFormat: "dd/mm/yy" }).val();
+        });
+
+    </script>
+}
+
+<h2 style="font-size: 30px; color: red;border: firebrick">Thêm Khách hàng</h2>
+<form class="form-horizontal" method="post" action="" id="frmaAddCustomer" enctype="multipart/form-data">
+    
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="alert alert-warning alert-dismissable hidden" role="alert">
+                <button type="button" class="close" data-dissmiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Hình ảnh:</label>
+        <input type="file" data-filename-placement="inside" id="fuMain" class="file" name="fuMain" />
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Mã số:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="Code" name="Code" />
+            <span id="userError"></span>
+        </div>
+        <label class="col-sm-2 control-label">Tên khách hàng:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtName" name="Name" />
+        </div>
+        <label class="col-sm-2 control-label">Mã số cũ (nếu có):</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="OldCode" name="OldCode" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Điện thoại:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtPhone" name="Phone" />
+        </div>
+        <label class="col-sm-2 control-label">Ngày bắt đầu:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtStartDate" name="StartDate" value="@string.Format("{0:dd/MM/yyyy}",DateTime.Now)" />
+        </div>
+        <label class="col-sm-2 control-label">Địa chỉ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtAddress" name="Address" />
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Tổng nợ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control auto" id="txtLoan" name="Loan" />
+        </div>
+        <label class="col-sm-2 control-label">Số tiền trả trong 1 ngày:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control auto" id="txtPrice" name="Price" />
+        </div>
+        <label class="col-sm-2 control-label">Số ngày được phép nợ thêm:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="DayBonus" name="DayBonus" />
+        </div>
+    </div>
+    <div>
+        <label class="col-sm-2 control-label">Ghi chú:</label>
+        @Html.TextAreaFor(e => e.Note, 10, 55, null)
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-check"></i>&nbsp;Lưu
+            </button>
+            <a class="btn btn-success" href="@Url.Action("LoadCustomerAH","Home")" role="button">
+                <i class="fa fa-mail-reply"></i>Trang khách hàng
+            </a>
+        </div>
+    </div>
+</form>

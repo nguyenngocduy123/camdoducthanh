@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "AddCustomer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section js{
+    <script src="~/Scripts/jquery.validate.js"></script>
+
+    <script type="text/javascript">
+
+        $("#frmaAddCustomer").validate({
+            rules: {
+                Code: {
+                    required: true
+                },
+                Name: {
+                    required: true
+                },
+                Phone: {
+                    required: true,
+                    phoneUS: true
+                },
+                Address: {
+                    required: true
+                },
+                Price: {
+                    required: true,
+                    number: true
+                },
+                Loan: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                Code: {
+                    required: 'Chưa nhập mã số'
+                },
+                Name: {
+                    required: 'Chưa nhập tên khách hàng'
+                },
+                Phone: {
+                    required: 'Chưa nhập số điện thoại',
+                    phoneUS: 'Nhập sđt không đúng định dạng'
+                },
+                Address: {
+                    required: 'Chưa nhập địa chỉ'
+                },
+                Price: {
+                    required: 'Chưa nhập số tiền phải trả trong 1 ngày',
+                    number: 'Phải là số'
+                },
+                Loan: {
+                    required: 'Chưa nhập tổng nợ',
+                    number: 'Phải là số'
+                }
+
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            //errorPlacement: function (error, element) {
+            //    var alertDiv = $('.alert-warning', $('#registerForm'));
+            //    error.appendTo(alertDiv);
+            //},
+
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                //label.closest('.form-group').removeClass('has-success');
+
+                //var name = label.attr('for');
+                //$('[name=' + name + ']').closest('.form-group').removeClass('has-error');
+                label.remove();
+            }
+
+        });
+    </script>
+}
+
+<h2 style="font-size: 30px; color: red;border: firebrick">Thêm Khách hàng</h2>
+<form class="form-horizontal" method="post" action="" id="frmaAddCustomer" enctype="multipart/form-data">
+    <input type="hidden" class="form-control" id="txtStartDate" name="StartDate" value="@DateTime.Now" />
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="alert alert-warning alert-dismissable hidden" role="alert">
+                <button type="button" class="close" data-dissmiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Mã số:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtCode" name="Code" />
+        </div>
+        <label class="col-sm-2 control-label">Tên khách hàng:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtName" name="Name" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Điện thoại:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtPhone" name="Phone" />
+        </div>
+        <label class="col-sm-2 control-label">Địa chỉ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtAddress" name="Address" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Tổng nợ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtLoan" name="Loan" />
+        </div>
+        <label class="col-sm-2 control-label">Số tiền trả trong 1 ngày:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtPrice" name="Price" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-check"></i>&nbsp;Lưu
+            </button>
+        </div>
+    </div>
+</form>

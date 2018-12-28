@@ -1,0 +1,32 @@
+﻿body {
+    font-family: 'Open Sans';
+    font-size: 11pt;
+}
+
+.bold13orange {
+    font-weight: bold;
+    font-size: 13pt;
+    color: #fc6e04;
+}
+
+.bold11red {
+    font-weight: bold;
+    font-size: 11pt;
+    color: #f00;
+}
+
+select, input {
+    font-family: 'Open Sans';
+    font-size: 11pt;
+}
+
+    /*input.blueButton {
+        border: none;
+        color: #fff;
+        background-color: #094ab2;
+        font-family: 'Open Sans';
+        font-size: 10pt;
+        font-weight:bold;
+        padding: 6px 20px 6px 20px;
+        cursor:pointer;
+    }*/

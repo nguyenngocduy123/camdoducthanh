@@ -1,0 +1,205 @@
+﻿@using CamDoAnhTu.Models
+
+@{
+    ViewBag.Title = "LoadCustomer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    int count = 0;
+
+    User us = new User();
+    us = (User)Session["CurUser"];
+}
+<!-- DataTables CSS -->
+<link href="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+<!-- DataTables Responsive CSS -->
+<link href="~/Assets/Admin/bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
+<link href="~/Assets/dataTables.tableTools.css" rel="stylesheet" />
+
+@section js{
+    <script src="~/Assets/Admin/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="~/Assets/dataTables.tableTools.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/Assets/Admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/Assets/Admin/bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="~/Assets/Admin/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#dataTables-example').DataTable({
+                responsive: true
+            });
+
+
+            $('#dataTables-example1').DataTable({
+                responsive: truex``
+            });
+
+        });
+
+        $('a[data-del-proid]').on('click', function () {
+            var proId = $(this).attr('data-del-proid');
+            $("#txtRemoveId").val(proId);
+            $("#frmRemoveItem").submit();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#logoutLink").click(function () {
+                alert("sda");
+                $("#logoutForm").submit();
+            });
+        });
+    </script>
+
+}
+
+<div class="row">
+    <form id="logoutForm" method="post" action="@Url.Action("Logout","Account")"></form>
+    <div class="col-lg-6">
+        <h2>Quản lí cầm đồ Anh Tú</h2>
+    </div>
+    <div class="col-lg-6" style="text-align: right; padding-right: 30px; padding-top: 20px">
+        <a id="logoutLink" href="#"><i class="glyphicon glyphicon-log-out"></i>Thoát</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModal"><i class="fa fa-plus"></i>  Thêm</button>*@
+                @if (us.Permission == 1)
+                {
+                    <a href="@Url.Action("AddCustomer", "Home")" class="btn btn-default">
+                        <i class="fa fa-plus"></i>&nbsp;Thêm khách hàng
+                    </a>
+                }
+            </div>
+            <form method="post" id="frmRemoveItem" action="@Url.Action("RemoveItem", "Home")">
+                <input id="txtRemoveId" type="hidden" name="proId" />
+            </form>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div class="dataTable_wrapper">
+                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                        <thead style="background-color: gold">
+                            <tr>
+                                <th>STT</th>
+                                <th>Ngày bắt đầu</th>
+                                <th>Mã số</th>
+                                <th>Tên K/H</th>
+                                <th>Điện thoại</th>
+                                <th>Đ/C</th>
+                                <th>Nợ</th>
+                                <th>Đơn giá/ngày</th>
+                                <th>Số ngày đã trả</th>
+                                <th>Số tiền đã trả</th>
+                                <th>Số tiền còn lại</th>
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Customer p in Model)
+                            {
+                                count++;
+                                <tr>
+                                    <td>@count</td>
+                                    <td>@p.StartDate.Value.ToShortDateString()</td>
+                                    <td>@p.Code</td>
+                                    <td>@p.Name</td>
+                                    <td>@p.Phone</td>
+                                    <td>@p.Address</td>
+                                    @if (p.Loan == null)
+                                    {
+                                        <td style="color: red">Warning</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@string.Format("{0:N0}", p.Loan)</td>
+                                    }
+
+                                    @if (p.Price == null)
+                                    {
+                                        <td style="color: red">Warning</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@string.Format("{0:N0}", p.Price)</td>
+                                    }
+                                    <td>
+                                        @if (p.DayPaids == null)
+                                        {
+                                            p.DayPaids = 0;
+                                        }
+                                        @string.Format("{0:N0}", p.DayPaids)
+                                    </td>
+                                    <td>
+                                        @if (p.AmountPaid == null)
+                                        {
+                                            p.AmountPaid = 0;
+                                        }
+                                        @string.Format("{0:N0}", p.AmountPaid)
+                                    </td>
+                                    <td>
+                                        @if (p.RemainingAmount == null)
+                                        {
+                                            p.RemainingAmount = 0;
+                                        }
+                                        @p.RemainingAmount
+                                    </td>
+                                    <td>
+                                        <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
+                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                        </a>
+                                        @if (us.Permission == 1)
+                                        {
+                                            <a class="btn btn-danger btn-xs" href="#" role="button" title="Xóa" data-del-proid="@p.Code">
+                                                <i class="fa fa-remove"></i>
+                                            </a>
+                                            <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                            <a class="btn btn-primary btn-xs" href="@Url.Action("Reset", "Home", new {id = @p.Code})" role="button" title="Tạo dây nợ mới">
+                                                <i class="fa fa-refresh"></i>
+                                            </a>
+                                        }
+
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
+                <h style="color: green; font-size: 20px">Tìm kiếm khách hàng theo ngày nợ</h>
+                <!-- /.table-responsive -->
+                <table class="table table-striped table-bordered table-hover" id="dataTables-example1">
+                    <thead>
+                        <tr>
+                            <td>
+                                Tên khách hàng
+                            </td>
+                            <td>Số ngày đã nợ</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Customer p in Model)
+                        {
+                            <tr>
+                                <td><a href="@Url.Action("Detail", "Home", new {id = p.Code})">@p.Name</a></td>
+                                <td>@p.NgayNo</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>

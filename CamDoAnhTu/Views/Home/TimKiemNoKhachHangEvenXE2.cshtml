@@ -1,0 +1,128 @@
+﻿@using CamDoAnhTu.Models
+
+@{
+    ViewBag.Title = "TimKiemNoKhachHang";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    int day;
+}
+
+@section css{
+    <!-- DataTables CSS -->
+    <link href="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- DataTables Responsive CSS -->
+
+    <link href="~/Assets/Admin/bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
+}
+
+@section js{
+    <script src="~/Assets/Admin/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/Assets/Admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="~/Assets/Admin/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            var table = $('#dataTables-example1').DataTable({
+                "responsive": true,
+                "ordering": false,
+                columnDefs: [
+                    {
+                        "targets": [0],
+                        "searchable": false
+                    }
+                ]
+            });
+
+            $('#min, #max').keyup(function () {
+                table.draw();
+            });
+        });
+
+
+        $.fn.dataTable.ext.search.push(
+    function (settings, data, dataIndex) {
+        var min = parseInt($('#min').val(), 10);
+        var max = parseInt($('#max').val(), 10);
+
+        var age = parseFloat(data[1]) || 0; // use data for the age column
+
+        if ((isNaN(min) && isNaN(max)) ||
+             (isNaN(min) && age <= max) ||
+             (min <= age && isNaN(max)) ||
+             (min <= age && age <= max)) {
+            return true;
+        }
+        return false;
+    }
+);
+
+    </script>
+
+}
+
+<a class="btn btn-success" href="@Url.Action("LoadCustomerXE2","Home")" role="button" style="margin-top:15px">
+    <i class="fa fa-mail-reply"></i>Trang khách hàng
+</a>
+<br />
+<h style="color: green; font-size: 20px">Tìm kiếm khách hàng theo ngày nợ</h>
+<!-- /.table-responsive -->
+<hr />
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Từ ngày:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="min" name="min" />
+        </div>
+        <label class="col-sm-2 control-label">Đến ngày:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="max" name="max" />
+        </div>
+    </div>
+</form>
+<hr />
+<table class="table table-striped table-bordered table-hover" id="dataTables-example1">
+    <thead>
+        <tr>
+            <td>
+                Tên khách hàng
+            </td>
+            <td>Số ngày đã nợ</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Customer p in Model)
+        {
+            if (Int32.Parse(p.Price.ToString()) == 0)
+            {
+                day = 0;
+            }
+            else
+            {
+                day = Int32.Parse(p.Loan.ToString()) / Int32.Parse(p.Price.ToString());
+            }
+            <tr>
+                <td>@p.Code-@p.Name-@p.Address-@p.Price-@day<p>@p.Phone</p></td>
+                <td>@p.NgayNo</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+

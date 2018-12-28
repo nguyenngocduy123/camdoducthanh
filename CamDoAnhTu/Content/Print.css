@@ -1,0 +1,42 @@
+﻿/*
+    Print Style
+*/
+
+@page Section1 {
+    size: 8.27in 11.69in; 
+    margin: 0.5in 0.5in 0.5in 0.5in; 
+    mso-header-margin: 0.5in; 
+    mso-footer-margin: 0.5in; 
+    mso-paper-source: 0;
+}
+
+
+
+div.divToPrinted {
+    page:Section1;
+} 
+
+body
+{
+    margin: 0mm 0mm 0mm 0mm;
+}
+
+.divToPrinted {
+/* width: 210mm; */
+    color: #000;
+    font-family: Times New Roman;
+    font-size: 11pt;
+    background-color: White;
+    
+    font-family: Times New Roman;
+    float: none;
+    width: auto;
+    margin: 0 0 0 0;
+    padding: 1px 1px 1px 1px;
+}
+
+.divToPrinted > table > tbody > tr > td,
+.divToPrinted > table > thead > tr > th
+{
+    padding: 4px 7px 1px 4px;
+}

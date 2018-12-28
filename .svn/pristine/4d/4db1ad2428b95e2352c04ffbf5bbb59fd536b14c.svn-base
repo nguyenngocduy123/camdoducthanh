@@ -1,0 +1,261 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CamDoAnhTu.Models;
+
+namespace CamDoAnhTu.Controllers
+{
+    public class HomeController : Controller
+    {
+        // GET: Home
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public IEnumerable<DateTime> EachDay(DateTime from, DateTime thru)
+        {
+            for (var day = from.Date; day.Date <= thru.Date; day = day.AddDays(1))
+                yield return day;
+        }
+
+
+        public ActionResult Management()
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                List<Customer> list = ctx.Customers.ToList();
+
+                return PartialView(list);
+            }
+        }
+
+        public ActionResult LoadCustomer()
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                List<Customer> lst = ctx.Customers.ToList();
+
+                foreach (Customer cs in lst)
+                {
+                    int count = 0;
+                    int countMax = 0;
+
+                    DateTime EndDate = DateTime.Now.Date;
+
+                    List<Loan> t = ctx.Loans.Where(p => p.IDCus == cs.Code).OrderBy(p => p.Date).ToList();
+                    Loan t1 = t.First();
+
+                    DateTime StartDate = t1.Date;
+
+                    List<Loan> query = t.Where(p => p.Date >= StartDate && p.Date <= EndDate).ToList();
+
+                    foreach (Loan temp in query)
+                    {
+                        if (temp.Status == 0)
+                        {
+                            count++;
+                        }
+                        else
+                        {
+                            countMax = count;
+                        }
+                    }
+
+                    cs.NgayNo = countMax;
+                }
+
+                return View(lst);
+            }
+        }
+
+        public ActionResult AddCustomer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddCustomer(Customer model)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                model.DayPaids = 0;
+                model.AmountPaid = 0;
+                model.RemainingAmount = 0;
+                ctx.Customers.Add(model);
+                ctx.SaveChanges();
+
+
+                for (int i = 1; i <= 59; i++)
+                {
+                    Loan temp = new Loan();
+                    temp.Date = model.StartDate.Value.AddDays(i);
+                    temp.IDCus = model.Code;
+                    temp.Status = 0;
+                    ctx.Loans.Add(temp);
+                    ctx.SaveChanges();
+                }
+            }
+            return RedirectToAction("LoadCustomer", "Home");
+        }
+
+        public ActionResult Update(int? id)
+        {
+            if (id.HasValue == false)
+            {
+                return RedirectToAction("LoadCustomer", "Home");
+            }
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+
+                Customer pro = ctx.Customers.Where(p => p.Code == id).FirstOrDefault();
+
+                if (pro == null)
+                {
+                    return RedirectToAction("LoadCustomer", "Home");
+                }
+
+                return View(pro);
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Update(Customer model)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                Customer pro = ctx.Customers.Where(p => p.Code == model.Code).FirstOrDefault();
+                pro.Name = model.Name;
+                pro.Phone = model.Phone;
+                pro.Address = model.Address;
+                pro.Loan = model.Loan;
+                pro.Price = model.Price;
+                pro.DayPaids = model.DayPaids;
+                pro.AmountPaid = model.AmountPaid;
+                pro.RemainingAmount = model.RemainingAmount;
+
+                ctx.SaveChanges();
+
+                ViewBag.Added = true;
+                return RedirectToAction("LoadCustomer", "Home");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult RemoveItem(int proId)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                Customer ep = ctx.Customers.Where(p => p.Code == proId).FirstOrDefault();
+                List<Loan> lstLoans = ctx.Loans.Where(p => p.IDCus == proId).ToList();
+
+                ctx.Customers.Remove(ep);
+
+                foreach (var item in lstLoans)
+                {
+                    ctx.Loans.Remove(item);
+                }
+                ctx.SaveChanges();
+            }
+            ViewBag.Delete = true;
+            return RedirectToAction("LoadCustomer", "Home");
+        }
+
+        public ActionResult Detail(int? id)
+        {
+            if (id.HasValue == false)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                Customer model = ctx.Customers.FirstOrDefault(p => p.Code == id);
+                List<Loan> list = ctx.Loans.Where(p => p.IDCus == id).ToList();
+                ViewData["Loan"] = list;
+
+                return View(model);
+            }
+        }
+
+        public ActionResult Addday(Loan model)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                ctx.Loans.Add(model);
+                ctx.SaveChanges();
+            }
+
+            return RedirectToAction("LoadCustomer", "Home");
+        }
+
+        public ActionResult UpdateLoan(int loanid)
+        {
+            Loan item = new Loan();
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                item = ctx.Loans.Where(p => p.ID == loanid).FirstOrDefault();
+                item.Status = 1;
+
+                Customer csCustomer = ctx.Customers.Where(p => p.Code == item.IDCus).FirstOrDefault();
+                csCustomer.DayPaids++;
+                csCustomer.AmountPaid = csCustomer.DayPaids * csCustomer.Price;
+                csCustomer.RemainingAmount = csCustomer.Loan - csCustomer.AmountPaid;
+
+                ctx.SaveChanges();
+            }
+
+            return RedirectToAction("Detail", "Home", new { id = item.IDCus });
+        }
+
+        public ActionResult Reset(int? id)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                Customer cs = ctx.Customers.Where(p => p.Code == id).FirstOrDefault();
+                int code = cs.Code;
+                string name = cs.Name;
+                string phone = cs.Phone;
+                string address = cs.Address;
+
+
+                List<Loan> lstLoans = ctx.Loans.Where(p => p.IDCus == id).ToList();
+
+                ctx.Customers.Remove(cs);
+
+                foreach (var item in lstLoans)
+                {
+                    ctx.Loans.Remove(item);
+                }
+                ctx.SaveChanges();
+
+                Customer csCustomer = new Customer();
+                csCustomer.Code = code;
+                csCustomer.Name = name;
+                csCustomer.Phone = phone;
+                csCustomer.Address = address;
+                csCustomer.DayPaids = 0;
+                csCustomer.StartDate = DateTime.Now.Date;
+                ctx.Customers.Add(csCustomer);
+                ctx.SaveChanges();
+
+                for (int i = 1; i <= 59; i++)
+                {
+                    Loan temp = new Loan();
+                    temp.Date = csCustomer.StartDate.Value.AddDays(i);
+                    temp.IDCus = csCustomer.Code;
+                    temp.Status = 0;
+                    ctx.Loans.Add(temp);
+                    ctx.SaveChanges();
+                }
+            }
+            return RedirectToAction("LoadCustomer", "Home");
+        }
+
+    }
+}

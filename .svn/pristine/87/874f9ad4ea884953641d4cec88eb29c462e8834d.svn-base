@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CamDoAnhTu.Models;
+
+namespace CamDoAnhTu.Controllers
+{
+    public class HomeController : Controller
+    {
+        // GET: Home
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Management()
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                List<Customer> list = ctx.Customers.ToList();
+
+                return PartialView(list);
+            }
+        }
+
+        public ActionResult LoadCustomer()
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                List<Customer> lst = ctx.Customers.ToList();
+
+                return View(lst);
+            }
+        }
+
+        public ActionResult AddCustomer()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddCustomer(Customer model)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                ctx.Customers.Add(model);
+                ctx.SaveChanges();
+            }
+
+            return RedirectToAction("LoadCustomer", "Home");
+        }
+
+        public ActionResult Update(int? id)
+        {
+            if (id.HasValue == false)
+            {
+                return RedirectToAction("LoadCustomer", "Home");
+            }
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                
+                Customer pro = ctx.Customers.Where(p => p.Code == id).FirstOrDefault();
+
+                if (pro == null)
+                {
+                    return RedirectToAction("LoadCustomer", "Home");
+                }
+
+                return View(pro);
+            }
+
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Update(Customer model)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                Customer pro = ctx.Customers.Where(p => p.Code == model.Code).FirstOrDefault();
+                pro.Name = model.Name;
+                pro.Phone = model.Phone;
+                pro.Address = model.Address;
+                pro.Loan = model.Loan;
+                pro.Price = model.Price;
+                pro.DayPaids = model.DayPaids;
+                pro.AmountPaid = model.AmountPaid;
+                pro.RemainingAmount = model.RemainingAmount;
+
+                ctx.SaveChanges();
+
+                ViewBag.Added = true;
+                return RedirectToAction("LoadCustomer", "Home");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult RemoveItem(int proId)
+        {
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                Customer ep = ctx.Customers.Where(p => p.Code == proId).FirstOrDefault();
+
+                ctx.Customers.Remove(ep);
+                ctx.SaveChanges();
+            }
+            ViewBag.Delete = true;
+            return RedirectToAction("LoadCustomer", "Home");
+        }
+
+        public ActionResult Detail(int? id)
+        {
+            if (id.HasValue == false)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                Customer model = ctx.Customers.Where(p => p.Code == id).FirstOrDefault();
+
+                return View(model);
+            }
+        }
+    }
+}

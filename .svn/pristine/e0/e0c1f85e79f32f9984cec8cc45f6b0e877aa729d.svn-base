@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using CamDoAnhTu.Models;
+
+namespace CamDoAnhTu.Controllers
+{
+    public class AccountController : Controller
+    {
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Login(LoginModel model)
+        {
+            string Username = model.UserName;
+            string password = model.PassWord;
+
+            using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+            {
+                User us = ctx.Users.Where(u => u.UserName == Username && u.PassWord == password).FirstOrDefault();
+
+                if (us != null)
+                {
+                    Session["IsLogin"] = 1;
+                    Session["CurUser"] = us;
+
+
+                    if (model.Remember)
+                    {
+                        Response.Cookies["Usersname"].Value = Username;
+                        Response.Cookies["Usersname"].Expires = DateTime.Now.AddDays(7);
+                    }
+                    return RedirectToAction("Index", "Home");
+
+                }
+                else
+                {
+                    ViewBag.Error = "Usersname hoặc password không đúng";
+                }
+            }
+            return View(model);
+        }
+    }
+}

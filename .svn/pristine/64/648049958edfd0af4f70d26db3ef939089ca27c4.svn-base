@@ -1,0 +1,131 @@
+﻿#main {
+    width: 950px;
+    margin: 0 auto; /* canh giữa */
+}
+
+#header {
+    height: 150px;
+    background-color: #ffe8a6;
+    font-size: 32pt;
+    font-weight: bold;
+    text-align: center;
+    line-height: 150px;
+    color: #293955;
+    border-style: dashed;
+    border-width: 1px;
+}
+
+#commandContainer {
+    height: 40px;
+    background-color: #0a6332;
+    color: #fff;
+}
+
+#navigation {
+    float: left;
+}
+
+    #navigation ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        height: 40px;
+    }
+
+    #navigation li {
+        float: left;
+        line-height: 40px;
+    }
+
+.userCommand {
+    padding-right: 10px;
+    float: right;
+    position: relative;
+    margin-top: 50px;
+    font-weight: bold;
+    width:27%;
+}
+
+#left {
+    float: left;
+    width: 220px;
+}
+
+#left-header-l {
+    float: left;
+    background-position: left top;
+    width: 35px;
+    height: 30px;
+    background-image: url('/Imgs/header_left.gif');
+    background-repeat: no-repeat;
+}
+
+#left-header-r {
+    float: left;
+    background-position: left top;
+    width: 175px;
+    height: 30px;
+    background-image: url('/Imgs/header_main.gif');
+    background-repeat: repeat-x;
+    color: #fff;
+    font-size: 10pt;
+    font-weight: bold;
+    line-height: 30px;
+    padding-left: 5px;
+}
+
+#left-body {
+    clear: both;
+    border: 1px solid #e2e6e7;
+    width: 206px;
+    padding: 5px 0px 5px 7px;
+}
+
+#right {
+    float: left;
+    margin-left: 5px;
+    width: 721px;
+}
+
+#right-header-l {
+    float: left;
+    width: 35px;
+    height: 30px;
+    background-position: left top;
+    background-image: url('/Imgs/header_left.gif');
+    background-repeat: no-repeat;
+}
+
+#right-header-r {
+    background-position: left top;
+    height: 30px;
+    color: #fff;
+    font-size: 10pt;
+    font-weight: bold;
+    line-height: 30px;
+    margin-left: 35px;
+    padding-left: 5px;
+    background-image: url('/Imgs/header_main.gif');
+    background-repeat: repeat-x;
+}
+
+#right-body {
+    clear: both;
+    padding: 5px 0px 5px 7px;
+    border: 1px solid #e2e6e7;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+#footer {
+    background-color: #094ab2;
+    color: #fff;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 10pt;
+    text-align: center;
+}
+
+    #footer div {
+        line-height: 16pt;
+    }

@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewBag.Title = "Update";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model CamDoAnhTu.Models.Customer
+
+@section js{
+    <script src="~/Scripts/jquery.validate.js"></script>
+
+    <script type="text/javascript">
+
+        $.validator.addMethod("vndate", function (value, element) {
+            return this.optional(element) || /^\d\d?\/\d\d?\/\d\d\d\d$/.test(value);
+        });
+
+        $.validator.addMethod("time", function (value, element) {
+            return this.optional(element) || /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?$/i.test(value);
+        }, "Please enter a valid time.");
+
+
+        $("#frmaAddCustomer").validate({
+            rules: {
+                Code: {
+                    required: true
+                },
+                Name: {
+                    required: true
+                },
+                Phone: {
+                    required: true
+                },
+                Address: {
+                    required: true
+                },
+                Price: {
+                    required: true,
+                    number: true
+                },
+                Daypaids: {
+                    required: true,
+                    number: true
+                }
+            },
+            messages: {
+                Worker: {
+                    required: 'Chưa nhập tên người thực hiện'
+                },
+                Customer: {
+                    required: 'Chưa nhập tên khách hàng'
+                },
+                DeliveryAddress: {
+                    required: 'Chưa nhập địa chỉ giao hàng'
+                },
+                JobNumber: {
+                    required: 'Chưa nhập số Job'
+                },
+                DeliveryDate: {
+                    required: 'Chưa nhập ngày giao hàng',
+                    vndate: 'Định dạng ngày tháng không đúng'
+                }
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            //errorPlacement: function (error, element) {
+            //    var alertDiv = $('.alert-warning', $('#registerForm'));
+            //    error.appendTo(alertDiv);
+            //},
+
+            highlight: function (element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            success: function (label) {
+                label.closest('.form-group').removeClass('has-error');
+                //label.closest('.form-group').removeClass('has-success');
+
+                //var name = label.attr('for');
+                //$('[name=' + name + ']').closest('.form-group').removeClass('has-error');
+                label.remove();
+            },
+
+        });
+    </script>
+}
+
+<h2 style="font-size: 30px; color: red;border: firebrick">Thêm Khách hàng</h2>
+<form class="form-horizontal" method="post" action="" id="frmaAddCustomer" enctype="multipart/form-data">
+    <input type="hidden" class="form-control" id="txtStartDate" name="StartDate" value="@DateTime.Now" />
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="alert alert-warning alert-dismissable hidden" role="alert">
+                <button type="button" class="close" data-dissmiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Mã số:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtCode" name="Code" value="@Model.Code" />
+        </div>
+        <label class="col-sm-2 control-label">Tên khách hàng:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtName" name="Name" value="@Model.Name" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Điện thoại:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtPhone" name="Phone" value="@Model.Phone" />
+        </div>
+        <label class="col-sm-2 control-label">Địa chỉ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtAddress" name="Address" value="@Model.Address" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Tổng nợ:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtLoan" name="Loan" value="@Model.Loan" />
+        </div>
+        <label class="col-sm-2 control-label">Số tiền trả trong 1 ngày:</label>
+        <div class="col-sm-2">
+            <input type="text" class="form-control" id="txtPrice" name="Price" value="@Model.Price" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            <button type="submit" class="btn btn-danger">
+                <i class="fa fa-check"></i>&nbsp;Lưu
+            </button>
+        </div>
+    </div>
+</form>
+

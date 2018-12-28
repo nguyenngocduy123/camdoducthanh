@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Cầm đồ Anh Tú</h2>
+
+<div id="plan-info">
+    @Html.Action("Management", "Home")
+</div>
+

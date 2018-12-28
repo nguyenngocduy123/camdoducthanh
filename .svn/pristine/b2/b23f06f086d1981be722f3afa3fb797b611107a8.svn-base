@@ -1,0 +1,91 @@
+﻿@using CamDoAnhTu.Models
+@model Customer
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Styles.Render("~/Content/css")
+<div class="body-content" style="background-color: white;">
+    <div class="row" style="background-color: #eee">
+        <div class="col-md-12" style="padding: 0px 8px">
+            <div class="left-content" id="detailContainer">
+                <div class="divContent">
+                    <div class='divContentDetails'>
+                        <div class="row">
+                            <div class="col-xs-5 col-md-2">
+                                <a>
+                                    @*<img src="../../picture/a.jpg" class="img-thumbnail">*@
+                                </a>
+                            </div>
+                        </div>
+                        @*Thông tin hợp đồng - hóa đơn*@
+                        <div class="row info" style="margin-top: 20px;">
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Ngày bắt đầu</label>
+                                <span class="col-sm-6">
+                                    @Model.StartDate.Value.ToShortDateString()
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Mã số</label>
+                                <span class="col-sm-6">
+                                    @Model.Code
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Tên khách hàng</label>
+                                <span class="col-sm-6">
+                                    @Model.Name
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Địa chỉ</label>
+                                <span class="col-sm-6">
+                                    @Model.Address
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Điện thoại</label>
+                                <span class="col-sm-6">
+                                    @Model.Phone
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Nợ</label>
+                                <span class="col-sm-6">
+                                    @Model.Loan
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Đơn giá ngày</label>
+                                <span class="col-sm-6">
+                                    @Model.Price
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Số ngày đã trả</label>
+                                <span class="col-sm-6">
+                                    @Model.DayPaids
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Số tiền đã trả</label>
+                                <span class="col-sm-6">
+                                    @Model.AmountPaid
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Còn lại</label>
+                                <span class="col-sm-6">
+                                    @Model.RemainingAmount
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

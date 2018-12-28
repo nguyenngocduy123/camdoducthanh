@@ -1,0 +1,990 @@
+﻿@using CamDoAnhTu.Models
+
+@model List<Customer>
+@{
+    ViewBag.Title = "LoadCustomer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+
+    int count = 0;
+
+    User us = new User();
+    //us = (User)Session["CurUser"];
+    HttpCookie reqCookies = Request.Cookies["userInfo"];
+    if (reqCookies != null)
+    {
+        us.UserName = reqCookies["username"].ToString();
+        us.PassWord = reqCookies["password"].ToString();
+        us.Permission = Int32.Parse(reqCookies["permisson"].ToString());
+    }
+
+    List<Loan> t = (List<Loan>)ViewData["Loans"];
+
+}
+@section css{
+    <!-- DataTables CSS -->
+    <link href="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- DataTables Responsive CSS -->
+
+    <link href="~/Assets/Admin/bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
+    <link href="~/Assets/jquery-ui-1.11.2.custom/jquery-ui.css" rel="stylesheet" />
+
+}
+@section js{
+    <script src="~/Assets/Admin/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="~/Assets/jquery-ui.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/Assets/Admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="~/Assets/Admin/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        function filterGlobal() {
+            $('#dataTables-example').DataTable().search(
+                $('#global_filter').val(),
+                $('#global_regex').prop('checked'),
+                $('#global_smart').prop('checked')
+            ).draw();
+        }
+
+        function filterColumn(i) {
+            $('#dataTables-example').DataTable().column(i).search(
+                $('#col' + i + '_filter').val(),
+                $('#col' + i + '_regex').prop('checked'),
+                $('#col' + i + '_smart').prop('checked')
+            ).draw();
+        }
+
+        $(document).ready(function () {
+            $('#dataTables-example').DataTable({
+                "aaSorting": [[0, "asc"]],
+                //"sPaginationType": "full_numbers",
+                "paging": false,
+                "searching": false,
+                //"bProcessing": true,
+                //"bDeferRender": true,
+
+                "order": [[0, "asc"]],
+                "responsive": true,
+                "ordering": true,
+                "iDisplayLength": 10,
+                "aLengthMenu": [[1, 10, 25, 50, 100, 500, 1000, -1], [1, 10, 25, 50, 100, 500, 1000, "All"]],
+                "columnDefs": [
+    { "visible": false, "targets": 0 }
+                ]
+            });
+
+            $('input.global_filter').on('keyup click', function () {
+                filterGlobal();
+            });
+
+            $('input.column_filter').on('keyup click', function () {
+                filterColumn($(this).parents('tr').attr('data-column'));
+            });
+        });
+
+
+    </script>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $("#logoutLink").click(function () {
+                $("#logoutForm").submit();
+            });
+        });
+
+
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Name").autocomplete({
+                source: "/Home/SearchName",
+                select: function (event, ui) {
+
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Code").autocomplete({
+                source: "/Home/SearchCode",
+                select: function (event, ui) {
+
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Phone").autocomplete({
+                source: "/Home/SearchPhone",
+                select: function (event, ui) {
+                }
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#Address").autocomplete({
+                source: "/Home/SearchAddress",
+                select: function (event, ui) {
+                }
+            });
+        });
+    </script>
+
+    <script>
+        $(function () {
+            $("#txtDate").datepicker({ dateFormat: "dd/mm/yy" }).val();
+        });
+    </script>
+
+    <script>
+        function chuadongtien(idLoan) {
+            var idcus = document.getElementById("IDCUS_" + idLoan).value;
+            var songaydong = document.getElementById("songaydong_" + idcus).value;
+            var ct = document.getElementById('ct_' + idcus).value;
+            if (ct == "") {
+                ct = 0;
+            }
+            else {
+                ct = parseInt(ct);
+            }
+            $.ajax({
+                type: 'get',
+                dataType: 'json',
+                cache: false,
+                url: '/Home/UpdateLoan',
+                data: { loanid: idLoan, songaydong: songaydong, idcus: idcus },
+                success: function (data) {
+                    debugger;
+                    if (data.success) {
+                        $('#amount_' + idcus).val(data.amount);
+                        $('#remain_' + idcus).val(data.remainingamount);
+
+                        if (data.status == 1) {
+                            ct = ct + data.ct;
+                        }
+                        $('#ct_' + idcus).val(ct);
+                        if (data.songay > 0) {
+                            for (var i = 0; i < data.songay; i++) {
+                                var a = idLoan + i;
+                                document.getElementById("item_" + a).className = "btn btn-success";
+                                document.getElementById("item_" + a).setAttribute("onclick", "return chuadongtien1(" + idLoan + ");");
+                            }
+                        } else {
+                            document.getElementById("item_" + idLoan).className = "btn btn-success";
+                            document.getElementById("item_" + idLoan).setAttribute("onclick", "return chuadongtien1(" + idLoan + ");");
+                        }
+
+                    } else
+                        alert('có lỗi xảy ra');
+                },
+                error: function (textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
+            });
+        }
+
+        function chuadongtien1(idLoan) {
+            var idcus = document.getElementById("IDCUS_" + idLoan).value;
+            var songaydong = document.getElementById("songaydong_" + idcus).value;
+            var ct = document.getElementById('ct_' + idcus).value;
+            if (ct == "") {
+                ct = 0;
+            }
+            else {
+                ct = parseInt(ct);
+            }
+
+            $.ajax({
+                type: 'get',
+                dataType: 'json',
+                cache: false,
+                url: '/Home/UpdateLoan',
+                data: { loanid: idLoan, songaydong: songaydong, idcus: idcus },
+                success: function (data) {
+                    debugger;
+                    if (data.success) {
+                        $('#amount_' + idcus).val(data.amount);
+                        $('#remain_' + idcus).val(data.remainingamount);
+
+                        if (data.status == 0) {
+                            ct = ct - data.ct;
+                        }
+                        $('#ct_' + idcus).val(ct);
+
+                        if (data.songay > 0) {
+                            for (var i = 0; i < data.songay; i++) {
+                                var a = idLoan + i;
+                                document.getElementById("item_" + a).className = "btn btn-danger";
+                                document.getElementById("item_" + a).setAttribute("onclick", "return chuadongtien(" + idLoan + ");");
+                            }
+                        } else {
+                            document.getElementById("item_" + idLoan).className = "btn btn-danger";
+                            document.getElementById("item_" + idLoan).setAttribute("onclick", "return chuadongtien(" + idLoan + ");");
+                        }
+
+                    } else
+                        alert('có lỗi xảy ra');
+                },
+                error: function (textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
+            });
+        }
+
+        function effect(idLoan) {
+
+            if (confirm('Bạn có thật sự muốn kết thúc dây nợ không ? ')) {
+                var idcus = document.getElementById("IDCUS_" + idLoan).value;
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    cache: false,
+                    url: '/Home/Reset',
+                    data: { id: idcus },
+                    success: function (data) {
+                        if (data.success) {
+                            document.getElementById("effect_" + idcus).style.color = "green";
+                            document.getElementById("item_" + idLoan).setAttribute("onclick", "");
+                            location.reload();
+                        } else
+                            alert('có lỗi xảy ra');
+                    },
+                    error: function (textStatus, errorThrown) {
+                        alert('Error - ' + errorThrown);
+                    }
+                });
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        function deleteCus(cusid) {
+
+            $.ajax({
+                cache: false,
+                dataType: "json",
+                type: "POST",
+                url: '@Url.Action("DeleteCustomer", "Home")',
+                data: { id: cusid },
+                error: function (xhr, status, error) {
+                    alert(error);
+                },
+                success: function (result, status, xhr) {
+                    if (result != null) {
+                        if (result.status == "success") {
+                            window.location.reload(true);
+                        }
+                        else if (result.status == "error") {
+                            window.alert(result.message);
+                            window.location.reload(true);
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+
+}
+@if (Model.Count == 0)
+{
+    <div class="row">
+        <form id="logoutForm" method="post" action="@Url.Action("Logout", "Account")"></form>
+        <form method="post" id="frmUpdateLoan" action="">
+            <input id="txtloanId" type="hidden" name="loanid" />
+        </form>
+        <div class="col-lg-6">
+            <h2>Quản lí cầm đồ Đức Thành</h2>
+        </div>
+        <div class="col-lg-6" style="text-align: right; padding-right: 30px; padding-top: 20px">
+            <a href="@Url.Action("ChangePassWord","Account")">Đổi password</a><span>|</span>
+            <a id="logoutLink" href="#"><i class="glyphicon glyphicon-log-out"></i>Thoát</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModal"><i class="fa fa-plus"></i>  Thêm</button>*@
+                    <a class="btn btn-success" href="@Url.Action("LoadCustomerAM","Home")" role="button">
+                        <i class="fa fa-home"></i>Trang chủ
+                    </a>
+                    <a class="btn btn-success" href="@Url.Action("Refresh","Home")" role="button" onclick="return confirm('Bạn có thật sự muốn refresh ?')">
+                        <i class="fa fa-refresh"></i>Cập nhập
+                    </a>
+                    @if (us != null && us.Permission == 1)
+                    {
+                        <a href="@Url.Action("AddCustomerAM", "Home")" class="btn btn-default">
+                            <i class="fa fa-plus"></i>&nbsp;Thêm khách hàng
+                        </a>
+                    }
+                    <a href="@Url.Action("TimKiemNoKhachHang", "Home")" class="btn btn-dropbox">
+                        <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày chẵn
+                    </a>
+                    <a href="@Url.Action("TimKiemNoKhachHang1", "Home")" class="btn btn-dropbox">
+                        <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày lẻ
+                    </a>
+                </div>
+                <form class="navbar-form navbar-left" role="search" action="/Home/SearchAM" style="height:50px">
+                    <div class="form-group">
+                        <label for="txtName" class="col-sm-2 control-label">Mã số:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="Code" name="Code" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtName" class="col-sm-3 control-label">Tên khách hàng:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="Name" name="Name" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtName" class="col-sm-2 control-label">Điện thoại: </label>
+                        <div class="col-sm-1">
+                            <input type="text" class="form-control" id="Phone" name="Phone" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtName" class="col-sm-2 control-label">Địa chỉ: </label>
+                        <div class="col-sm-1">
+                            <input type="text" class="form-control" id="Address" name="Address" />
+                        </div>
+                    </div>
+                    <span class="input-group-btn" style="float:left;margin-left:500px">
+                        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </form>
+
+                @*<table cellpadding="3" cellspacing="0" border="0" style="width: 67%; margin: 0 auto 2em auto;">
+                        <thead>
+                            <tr>
+                                <th>Target</th>
+                                <th>Search text</th>
+                                <th>Treat as regex</th>
+                                <th>Use smart search</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="filter_global">
+                                <td>Global search</td>
+                                <td align="center"><input type="text" class="global_filter" id="global_filter"></td>
+                                <td align="center"><input type="checkbox" class="global_filter" id="global_regex"></td>
+                                <td align="center"><input type="checkbox" class="global_filter" id="global_smart" checked="checked"></td>
+                            </tr>
+                            <tr id="filter_col1" data-column="0">
+                                <td>Column - Mã số</td>
+                                <td align="center"><input type="text" class="column_filter" id="col0_filter"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col0_regex"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col0_smart" checked="checked"></td>
+                            </tr>
+                            <tr id="filter_col2" data-column="1">
+                                <td>Column - Họ tên Đ/C</td>
+                                <td align="center"><input type="text" class="column_filter" id="col1_filter"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col1_regex"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col1_smart" checked="checked"></td>
+                            </tr>
+                            <tr id="filter_col3" data-column="2">
+                                <td>Column - Ngày vay/SĐT</td>
+                                <td align="center"><input type="text" class="column_filter" id="col2_filter"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col2_regex"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col2_smart" checked="checked"></td>
+                            </tr>
+                        </tbody>
+                    </table>*@
+
+                <!-- /.panel-heading -->
+                <text>Không có khách hàng !!</text>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+}
+else
+{
+    <div class="row">
+        <form id="logoutForm" method="post" action="@Url.Action("Logout", "Account")"></form>
+        <form method="post" id="frmUpdateLoan" action="">
+            <input id="txtloanId" type="hidden" name="loanid" />
+        </form>
+        <div class="col-lg-6">
+            <h2>Quản lí cầm đồ Đức Thành</h2>
+        </div>
+        <div class="col-lg-6" style="text-align: right; padding-right: 30px; padding-top: 20px">
+            <a href="@Url.Action("ChangePassWord","Account")">Đổi password</a><span>|</span>
+            <a id="logoutLink" href="#"><i class="glyphicon glyphicon-log-out"></i>Thoát</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModal"><i class="fa fa-plus"></i>  Thêm</button>*@
+                    <a class="btn btn-success" href="@Url.Action("LoadCustomerAM","Home")" role="button">
+                        <i class="fa fa-home"></i>Trang chủ
+                    </a>
+                    <a class="btn btn-success" href="@Url.Action("Refresh","Home")" role="button" onclick="return confirm('Bạn có thật sự muốn refresh ?')">
+                        <i class="fa fa-refresh"></i>Cập nhập
+                    </a>
+                    @if (us != null && us.Permission == 1)
+                    {
+                        <a href="@Url.Action("AddCustomerAM", "Home")" class="btn btn-default">
+                            <i class="fa fa-plus"></i>&nbsp;Thêm khách hàng
+                        </a>
+                    }
+                    <a href="@Url.Action("TimKiemNoKhachHangEvenAM", "Home")" class="btn btn-dropbox">
+                        <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày chẵn
+                    </a>
+                    <a href="@Url.Action("TimKiemNoKhachHangOddAM", "Home")" class="btn btn-dropbox">
+                        <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày lẻ
+                    </a>
+                </div>
+                <form class="form-horizontal" role="search" action="/Home/SearchAM" style="height:50px; margin-bottom:50px;margin-top:10px">
+                    <div class="form-group">
+                        <label for="txtName" class="col-sm-2 control-label">Tên khách hàng:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="Name" name="Name" />
+                        </div>
+                        <div class="form-group">
+                            <label for="txtName" class="col-sm-2 control-label">Địa chỉ: </label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="Address" name="Address" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtName" class="col-sm-2 control-label">Điện thoại: </label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="Phone" name="Phone" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtName" class="col-sm-2 control-label">Nợ xấu: </label>
+                        <div class="col-sm-2">
+                            <input type="checkbox" class="checkbox" id="Noxau" name="Noxau" value="1" />
+                        </div>
+                        <label for="txtName" class="col-sm-2 control-label">Hết nợ: </label>
+                        <div class="col-sm-2">
+                            <input type="checkbox" class="checkbox" id="hetno" name="hetno" value="1" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+
+                        <label for="txtName" class="col-sm-2 control-label">Mã số:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="Code" name="Code" />
+                        </div>
+                    </div>
+                    <span class="input-group-btn" style="float:left;margin-left:500px">
+                        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </form>
+                <h3 style="color:red">@ViewBag.Message</h3>
+                @*<table cellpadding="3" cellspacing="0" border="0" style="width: 67%; margin: 0 auto 2em auto;">
+                        <thead>
+                            <tr>
+                                <th>Target</th>
+                                <th>Search text</th>
+                                <th>Treat as regex</th>
+                                <th>Use smart search</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr id="filter_global">
+                                <td>Global search</td>
+                                <td align="center"><input type="text" class="global_filter" id="global_filter"></td>
+                                <td align="center"><input type="checkbox" class="global_filter" id="global_regex"></td>
+                                <td align="center"><input type="checkbox" class="global_filter" id="global_smart" checked="checked"></td>
+                            </tr>
+                            <tr id="filter_col1" data-column="0">
+                                <td>Column - Mã số</td>
+                                <td align="center"><input type="text" class="column_filter" id="col0_filter"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col0_regex"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col0_smart" checked="checked"></td>
+                            </tr>
+                            <tr id="filter_col2" data-column="1">
+                                <td>Column - Họ tên Đ/C</td>
+                                <td align="center"><input type="text" class="column_filter" id="col1_filter"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col1_regex"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col1_smart" checked="checked"></td>
+                            </tr>
+                            <tr id="filter_col3" data-column="2">
+                                <td>Column - Ngày vay/SĐT</td>
+                                <td align="center"><input type="text" class="column_filter" id="col2_filter"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col2_regex"></td>
+                                <td align="center"><input type="checkbox" class="column_filter" id="col2_smart" checked="checked"></td>
+                            </tr>
+                        </tbody>
+                    </table>*@
+
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="dataTable_wrapper">
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                            <thead style="background-color: gold">
+                                <tr>
+                                    <th>Mã số</th>
+                                    <th style="width: 2px">Mã chữ cái</th>
+                                    <th style="width: 3px">Số thứ tự</th>
+                                    <th style="width: 100px">Họ tên Đ/C</th>
+                                    <th style="width: 100px">Ngày vay/SĐT</th>
+                                    <th style="width: 30px">Nợ/Ngày nợ thêm</th>
+                                    <th style="width: 30px">Đơn giá/ngày</th>
+                                    <th style="width: 80px">Đã trả/Còn lại</th>
+                                    <th style="width: 600px">Số ngày đã trả</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (Customer p in Model)
+                                {
+                                    Loan k = new Loan();
+                                    if (p.DayBonus == null)
+                                    {
+                                        p.DayBonus = 0;
+                                    }
+
+                                    using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
+                                    {
+                                        t = ctx.Loans.Where(l => l.IDCus == p.Code).OrderBy(l => l.Date).ToList();
+                                        k = t.FirstOrDefault();
+                                    }
+
+                                    string id = p.Code;
+                                    int day = 0;
+                                    if (String.IsNullOrEmpty(p.Loan.ToString()) == false && String.IsNullOrEmpty(p.Price.ToString()) == false)
+                                    {
+                                        if (Int32.Parse(p.Price.ToString()) == 0)
+                                        {
+                                            day = 0;
+                                        }
+                                        else
+                                        {
+                                            day = Int32.Parse(p.Loan.ToString()) / Int32.Parse(p.Price.ToString());
+                                        }
+
+                                        if (day > 100)
+                                        {
+                                            day = 0;
+                                        }
+                                    }
+
+                                    count++;
+                                    if (p.DayPaids == day || p.Description == "End")
+                                    {
+                                        <tr style="color:green">
+                                            <td>@p.CodeSort</td>
+                                            @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
+                                            {
+                                                <td>@p.Code.Substring(0, 2)</td>
+                                                <td>@Int32.Parse(p.Code.Substring(2, p.Code.Length - 2))</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                                <td>@Int32.Parse(p.Code)</td>
+                                            }
+                                            <td>
+                                                <p style="text-decoration: underline">@p.Name</p>
+                                                <p>@p.Address</p>
+                                                @if (p.OldCode != null)
+                                                {
+                                                    <p style="color: blue">Mã số cũ:@p.OldCode </p>
+                                                }
+                                            </td>
+                                            <td>
+                                                @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
+                                            </td>
+                                            @if (p.Loan == null)
+                                            {
+                                                <td style="color: red">
+                                                    Warning
+                                                    <p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+
+                                            @if (p.Price == null)
+                                            {
+                                                <td style="color: red">Warning</td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Price)<p>
+                                                        <font color="red">@day</font>
+                                                    </p>
+                                                </td>
+                                            }
+                                            <td>
+                                                @if (p.AmountPaid == null)
+                                                {
+                                                    p.AmountPaid = 0;
+                                                }
+                                                @if (p.RemainingAmount == null)
+                                                {
+                                                    p.RemainingAmount = 0;
+                                                }
+                                                <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
+                                                <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
+                                                <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
+                                                <p>Số ngày đã trả : @p.DayPaids</p>
+                                            </td>
+                                            <td>
+                                                <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
+                                                @foreach (Loan i in t)
+                                                {
+                                                    <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
+
+                                                    if (us.Permission == 1 && p.Description != "End")
+                                                    {
+                                                        if (i.Status == 0)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                        if (i.Status == 1)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (i.Status == 0)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                        if (i.Status == 1)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                    }
+
+                                                }
+                                            </td>
+                                            <td style="width: 100px">
+                                                <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                                </a>
+                                                @if (us.Permission == 1)
+                                                {
+                                                    <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
+
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("UpdateAM", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                    else if (p.NgayNo >= 3 + Int32.Parse(p.DayBonus.ToString()))
+                                    {
+                                        <tr style="color:red" id="effect_@(p.Code)">
+                                            <td>@p.CodeSort</td>
+                                            @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
+                                            {
+                                                <td>@p.Code.Substring(0, 2)</td>
+                                                <td>@Int32.Parse(p.Code.Substring(2, p.Code.Length - 2))</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                                <td>@Int32.Parse(p.Code)</td>
+                                            }
+                                            <td>
+                                                <p style="text-decoration: underline">@p.Name</p>
+                                                <p>@p.Address</p>
+                                                @if (p.OldCode != null)
+                                                {
+                                                    <p style="color: blue">Mã số cũ:@p.OldCode </p>
+                                                }
+                                            </td>
+                                            <td>
+                                                @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
+                                            </td>
+                                            @if (p.Loan == null)
+                                            {
+                                                <td style="color: red">
+                                                    Warning
+                                                    <p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+
+                                            @if (p.Price == null)
+                                            {
+                                                <td style="color: red">Warning</td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Price)<p>
+                                                        <font color="red">@day</font>
+                                                    </p>
+                                                </td>
+                                            }
+                                            <td>
+                                                @if (p.AmountPaid == null)
+                                                {
+                                                    p.AmountPaid = 0;
+                                                }
+                                                @if (p.RemainingAmount == null)
+                                                {
+                                                    p.RemainingAmount = 0;
+                                                }
+                                                <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
+                                                <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
+                                                <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
+                                                <p>Số ngày đã trả : @p.DayPaids</p>
+                                            </td>
+                                            <td>
+                                                <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
+                                                @foreach (Loan i in t)
+                                                {
+                                                    <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
+
+                                                    if (us.Permission == 1 && p.Description != "End")
+                                                    {
+                                                        if (i.Status == 0)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                        if (i.Status == 1)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (i.Status == 0)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                        if (i.Status == 1)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+                                            <td style="width: 100px">
+                                                <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                                </a>
+                                                @if (us.Permission == 1)
+                                                {
+                                                    <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
+
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("UpdateAM", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr id="effect_@(p.Code)">
+                                            <td>@p.CodeSort</td>
+                                            @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
+                                            {
+                                                <td>@p.Code.Substring(0, 2)</td>
+                                                <td>@Int32.Parse(p.Code.Substring(2, p.Code.Length - 2))</td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                                <td>@Int32.Parse(p.Code)</td>
+                                            }
+                                            <td>
+                                                <p style="text-decoration: underline">@p.Name</p>
+                                                <p>@p.Address</p>
+                                                @if (p.OldCode != null)
+                                                {
+                                                    <p style="color: blue">Mã số cũ:@p.OldCode </p>
+                                                }
+                                            </td>
+                                            <td>
+                                                @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
+                                            </td>
+                                            @if (p.Loan == null)
+                                            {
+                                                <td style="color: red">
+                                                    Warning
+                                                    <p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+
+                                            @if (p.Price == null)
+                                            {
+                                                <td style="color: red">Warning</td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Price)<p>
+                                                        <font color="red">@day</font>
+                                                    </p>
+                                                </td>
+                                            }
+                                            <td>
+                                                @if (p.AmountPaid == null)
+                                                {
+                                                    p.AmountPaid = 0;
+                                                }
+                                                @if (p.RemainingAmount == null)
+                                                {
+                                                    p.RemainingAmount = 0;
+                                                }
+                                                <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
+                                                <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
+                                                <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
+                                                <p>Số ngày đã trả : @p.DayPaids</p>
+                                            </td>
+                                            <td>
+                                                <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
+                                                @foreach (Loan i in t)
+                                                {
+                                                    <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
+
+                                                    if (us.Permission == 1 && p.Description != "End")
+                                                    {
+                                                        if (i.Status == 0)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                        if (i.Status == 1)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (i.Status == 0)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                        if (i.Status == 1)
+                                                        {
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+                                            <td style="width: 100px">
+                                                <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                                </a>
+                                                @if (us.Permission == 1)
+                                                {
+                                                    <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
+
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("UpdateAM", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                        <nav style="margin-top:20px; margin-left:50px">
+                            <ul class="pagination">
+                                <li class="@(ViewBag.CurPage==1 ? "disabled": "")">
+                                    <a href="@Url.Action("LoadCustomerAM", "Home", new { page = ViewBag.CurPage - 1 })" aria-label="Pre aria-label=" previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                @for (int i = 1; i <= ViewBag.PageCount; i++)
+                                {
+                                    <li class="@(ViewBag.CurPage==i ? "active": "")">
+                                        <a href="@Url.Action("LoadCustomerAM", "Home", new {page = i })">@i</a>
+                                    </li>
+                                }
+                                <li class="@(ViewBag.CurPage==ViewBag.PageCount ? "disabled": "")">
+                                    <a href="@Url.Action("LoadCustomerAM", "Home", new { page = ViewBag.CurPage + 1 })" aria-label="Nex aria-label=" next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                    </div>
+                    <hr />
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-12 -->
+    </div>
+}
+

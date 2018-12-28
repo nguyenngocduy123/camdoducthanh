@@ -1,0 +1,227 @@
+﻿@using CamDoAnhTu.Models
+@model Customer
+@{
+    List<Loan> lst = (List<Loan>)ViewData["Loan"];
+
+    User us = new User();
+    //us = (User)Session["CurUser"];
+    HttpCookie reqCookies = Request.Cookies["userInfo"];
+    if (reqCookies != null)
+    {
+        us.UserName = reqCookies["username"].ToString();
+        us.PassWord = reqCookies["password"].ToString();
+        us.Permission = Int32.Parse(reqCookies["permisson"].ToString());
+    }
+}
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Styles.Render("~/Content/css")
+
+@section css{
+    <!-- DataTables CSS -->
+    <link href="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- DataTables Responsive CSS -->
+    <link href="~/Assets/Admin/bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
+    <link href="~/Assets/bootstrap-fileinput-master/css/fileinput.css" rel="stylesheet" />
+    <link href="~/Assets/Simple-Date-Picker-for-Bootstrap/css/datepicker.css" rel="stylesheet" />
+    <link href="~/Assets/silviomoreto-bootstrap-select-a8ed49e/dist/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/Assets/jquery-ui-1.11.2.custom/jquery-ui.css" rel="stylesheet" />>
+}
+
+@section js{
+    <script src="~/Assets/Admin/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/Assets/Admin/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JavaScript -->
+    <script src="~/Assets/Admin/bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/Assets/Admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#dataTables-example').DataTable({
+                responsive: true
+            });
+        });
+
+        $('a[data-del-proid]').on('click', function () {
+            var loanid = $(this).attr('data-del-proid');
+            $("#txtRemoveId").val(loanid);
+            $("#frmRemoveItem").submit();
+
+        });
+
+    </script>
+    @*<script>
+            $(document).ready(function () {
+                $('a[data-del-proid]').on('click', function () {
+                    var recordToDelete = $(this).attr("data-del-proid");
+
+                    $.ajax({
+                        url: "/Home/UpdateLoan", //url path to the controller action
+                        type: "POST",
+                        data: {
+                            loanid: recordToDelete
+                        }
+                    })
+                        .success(function (data) {
+
+                        });
+                });
+            });
+        </script>*@
+
+}
+
+<div class="body-content" style="background-color: white;">
+    <form method="post" id="frmRemoveItem" action="@Url.Action("UpdateLoan","Home")">
+        <input id="txtRemoveId" type="hidden" name="loanid" />
+    </form>
+    <div class="row" style="background-color: #eee">
+        <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+            <i class="fa fa-mail-reply"></i>Trang khách hàng
+        </a>
+        <div class="col-md-12" style="padding: 0px 8px">
+            <div class="left-content" id="detailContainer">
+                <div class="divContent">
+                    <div class='divContentDetails'>
+                        <div class="row">
+                            <div class="col-xs-5 col-md-2">
+                                <a>
+                                    <img class="file-preview-image" style="height: 160px;width: auto" title="@Model.Name" alt="@Model.Name" src="~/image/@Model.Code/main.jpg" />
+                                </a>
+                            </div>
+                        </div>
+                        @*Thông tin hợp đồng - hóa đơn*@
+                        <div class="row info" style="margin-top: 20px;">
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Ngày bắt đầu</label>
+                                <span class="col-sm-6">
+                                    @Model.StartDate.ToShortDateString()
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Mã số</label>
+                                <span class="col-sm-6">
+                                    @Model.Code
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Tên khách hàng</label>
+                                <span class="col-sm-6">
+                                    @Model.Name
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Địa chỉ</label>
+                                <span class="col-sm-6">
+                                    @Model.Address
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Điện thoại</label>
+                                <span class="col-sm-6">
+                                    @Model.Phone
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Nợ</label>
+                                <span class="col-sm-6">
+                                    @string.Format("{0:N0}", Model.Loan)
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Đơn giá ngày</label>
+                                <span class="col-sm-6">
+                                    @string.Format("{0:N0}", Model.Price)
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Số ngày đã trả</label>
+                                <span class="col-sm-6">
+                                    @Model.DayPaids
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Số tiền đã trả</label>
+                                <span class="col-sm-6">
+                                    @string.Format("{0:N0}", Model.AmountPaid)
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Còn lại</label>
+                                <span class="col-sm-6">
+                                    @string.Format("{0:N0}", Model.RemainingAmount)
+                                </span>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-sm-6">Ghi chú</label>
+                                <span class="col-sm-6">
+                                    @Model.Note
+                                </span>
+                            </div>
+                        </div>
+                        @if (us.Permission == 1)
+                        {
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Ngày</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in lst)
+                                    {
+                                        <tr>
+                                            <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                @if (us.Permission == 1)
+                                                {
+                                                    if (item.Status == 0)
+                                                    {
+                                                        @*<input type="hidden" id="Status" name="Status" value=""/>*@
+                                                        <a class="btn btn-danger" href="#" title="Đóng tiền" role="button" data-del-proid="@item.ID">
+                                                            <i class="fa fa-dollar">&nbsp;Chưa đóng tiền</i>
+                                                        </a>
+                                                    }
+                                                    if (item.Status == 1)
+                                                    {
+                                                        <span class="btn btn-success">
+                                                            <i class="fa fa-check">&nbsp;Đã đóng tiền</i>
+                                                        </span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (item.Status == 0)
+                                                    {
+                                                        @*<input type="hidden" id="Status" name="Status" value=""/>*@
+                                                        <a class="btn btn-danger" href="#" title="Đóng tiền" role="button">
+                                                            <i class="fa fa-dollar">&nbsp;Chưa đóng tiền</i>
+                                                        </a>
+                                                    }
+                                                    if (item.Status == 1)
+                                                    {
+                                                        <span class="btn btn-success">
+                                                            <i class="fa fa-check">&nbsp;Đã đóng tiền</i>
+                                                        </span>
+                                                    }
+                                                }
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

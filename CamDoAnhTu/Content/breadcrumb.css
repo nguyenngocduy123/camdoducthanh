@@ -1,0 +1,79 @@
+
+/**********************/
+.breadcrumbs-one
+{
+    padding: 0; 
+    margin: 0;
+    border: 1px solid #e6e6e6;
+    /*box-shadow: 0 0 2px rgba(0,0,0,.2);*/
+    overflow: hidden;
+    list-style-type: none;
+    float: right;
+}
+
+.breadcrumbs-one li {
+    float: left;
+}
+
+.breadcrumbs-one a {
+    padding: 5px 10px 5px 20px;
+    float: left;
+    text-decoration: none;
+    color: #444;
+    position: relative;
+    /*text-shadow: 0 1px 0 rgba(255,255,255,.5);*/
+    background-color: #fff;
+    /*background-image: linear-gradient(to right, #f5f5f5, #e6e6e6);*/
+}
+
+.breadcrumbs-one a::after,
+.breadcrumbs-one a::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    margin-top: -16px;
+    border-top: 16px solid transparent;
+    border-bottom: 16px solid transparent;
+    border-left: 8px solid;
+    right: -8px;
+}
+
+.breadcrumbs-one a::after { 
+    z-index: 2;
+    border-left-color: #fff;  
+}
+
+.breadcrumbs-one a::before {
+    border-left-color: #e6e6e6;  
+    right: -9px;
+    z-index: 1; 
+}
+
+.breadcrumbs-one li:first-child a {
+    padding-left: 1em;
+}
+
+.breadcrumbs-one a:hover{
+    background: #e6e6e6;
+}
+
+.breadcrumbs-one a:hover::after {
+    border-left-color: #e6e6e6;
+}
+
+.breadcrumbs-one .currentStatus a,
+.breadcrumbs-one .currentStatus a:hover {
+    color:#fff;
+    font-weight: bold;
+    background: #5bc0de;
+}
+
+.breadcrumbs-one .currentStatus a::after,
+.breadcrumbs-one .currentStatus a:hover::after {
+    border-left-color: #5bc0de;
+}
+
+.breadcrumbs-one .currentStatus::after,
+.breadcrumbs-one .currentStatus::before{
+    content: normal;  
+}
