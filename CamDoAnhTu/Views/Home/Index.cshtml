@@ -5,7 +5,7 @@
 
 <h2>Cầm đồ Đức Thành</h2>
 
-<div id="plan-info">
+@*<div id="plan-info">
     @Html.Action("Management", "Home")
 
     @Html.Action("AN", "Home")
@@ -21,4 +21,19 @@
     @Html.Action("XE1", "Home")
 
     @Html.Action("XE2", "Home")
+</div>*@
+
+<div id="plan-info">
+    <div class="row">        
+        @Html.Action("Management", "Home", new { type = 1 })
+        @Html.Action("Management", "Home", new { type = 5 })
+        @Html.Action("Management", "Home", new { type = 8 })
+        @Html.Action("Management", "Home", new { type = 9 })
+    </div>
+    <div class="row">
+        @Html.Action("Management", "Home", new { type = 10 })
+        @Html.Action("Management", "Home", new { type = 11 })
+        @Html.Action("XE1", "Home")
+        @Html.Action("XE2", "Home")
+    </div>
 </div>

@@ -20,6 +20,7 @@
     }
 
     List<Loan> t = (List<Loan>)ViewData["Loans"];
+    int type = (int)ViewBag.type;
 
 }
 @section css{
@@ -74,7 +75,7 @@
                 "iDisplayLength": 10,
                 "aLengthMenu": [[1, 10, 25, 50, 100, 500, 1000, -1], [1, 10, 25, 50, 100, 500, 1000, "All"]],
                 "columnDefs": [
-    { "visible": false, "targets": 0 }
+                    { "visible": false, "targets": 0 }
                 ]
             });
 
@@ -313,7 +314,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModal"><i class="fa fa-plus"></i>  Thêm</button>*@
-                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home",  new {type =type })" role="button">
                         <i class="fa fa-home"></i>Trang chủ
                     </a>
                     <a class="btn btn-success" href="@Url.Action("Refresh","Home")" role="button" onclick="return confirm('Bạn có thật sự muốn refresh ?')">
@@ -321,18 +322,19 @@
                     </a>
                     @if (us != null && us.Permission == 1)
                     {
-                        <a href="@Url.Action("AddCustomer", "Home")" class="btn btn-default">
+                        <a href="@Url.Action("AddCustomer", "Home", new { type = type })" class="btn btn-default">
                             <i class="fa fa-plus"></i>&nbsp;Thêm khách hàng
                         </a>
                     }
-                    <a href="@Url.Action("TimKiemNoKhachHang", "Home")" class="btn btn-dropbox">
+                    <a href="@Url.Action("TimKiemNoKhachHang", "Home", new { type = type })" class="btn btn-dropbox">
                         <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày chẵn
                     </a>
-                    <a href="@Url.Action("TimKiemNoKhachHang1", "Home")" class="btn btn-dropbox">
+                    <a href="@Url.Action("TimKiemNoKhachHang1", "Home", new { type = type })" class="btn btn-dropbox">
                         <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày lẻ
                     </a>
                 </div>
                 <form class="navbar-form navbar-left" role="search" action="/Home/Search" style="height:50px">
+                    <input type="hidden" value="@type" name="type" id="type" />
                     <div class="form-group">
                         <label for="txtName" class="col-sm-2 control-label">Mã số:</label>
                         <div class="col-sm-2">
@@ -362,44 +364,6 @@
                     </span>
                 </form>
 
-                @*<table cellpadding="3" cellspacing="0" border="0" style="width: 67%; margin: 0 auto 2em auto;">
-                        <thead>
-                            <tr>
-                                <th>Target</th>
-                                <th>Search text</th>
-                                <th>Treat as regex</th>
-                                <th>Use smart search</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr id="filter_global">
-                                <td>Global search</td>
-                                <td align="center"><input type="text" class="global_filter" id="global_filter"></td>
-                                <td align="center"><input type="checkbox" class="global_filter" id="global_regex"></td>
-                                <td align="center"><input type="checkbox" class="global_filter" id="global_smart" checked="checked"></td>
-                            </tr>
-                            <tr id="filter_col1" data-column="0">
-                                <td>Column - Mã số</td>
-                                <td align="center"><input type="text" class="column_filter" id="col0_filter"></td>
-                                <td align="center"><input type="checkbox" class="column_filter" id="col0_regex"></td>
-                                <td align="center"><input type="checkbox" class="column_filter" id="col0_smart" checked="checked"></td>
-                            </tr>
-                            <tr id="filter_col2" data-column="1">
-                                <td>Column - Họ tên Đ/C</td>
-                                <td align="center"><input type="text" class="column_filter" id="col1_filter"></td>
-                                <td align="center"><input type="checkbox" class="column_filter" id="col1_regex"></td>
-                                <td align="center"><input type="checkbox" class="column_filter" id="col1_smart" checked="checked"></td>
-                            </tr>
-                            <tr id="filter_col3" data-column="2">
-                                <td>Column - Ngày vay/SĐT</td>
-                                <td align="center"><input type="text" class="column_filter" id="col2_filter"></td>
-                                <td align="center"><input type="checkbox" class="column_filter" id="col2_regex"></td>
-                                <td align="center"><input type="checkbox" class="column_filter" id="col2_smart" checked="checked"></td>
-                            </tr>
-                        </tbody>
-                    </table>*@
-
-                <!-- /.panel-heading -->
                 <text>Không có khách hàng !!</text>
                 <!-- /.panel-body -->
             </div>
@@ -428,7 +392,7 @@ else
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModal"><i class="fa fa-plus"></i>  Thêm</button>*@
-                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home",  new {type =type })" role="button">
                         <i class="fa fa-home"></i>Trang chủ
                     </a>
                     <a class="btn btn-success" href="@Url.Action("Refresh","Home")" role="button" onclick="return confirm('Bạn có thật sự muốn refresh ?')">
@@ -436,18 +400,19 @@ else
                     </a>
                     @if (us != null && us.Permission == 1)
                     {
-                        <a href="@Url.Action("AddCustomer", "Home")" class="btn btn-default">
+                        <a href="@Url.Action("AddCustomer", "Home", new {type = type })" class="btn btn-default">
                             <i class="fa fa-plus"></i>&nbsp;Thêm khách hàng
                         </a>
                     }
-                    <a href="@Url.Action("TimKiemNoKhachHang", "Home")" class="btn btn-dropbox">
+                    <a href="@Url.Action("TimKiemNoKhachHang", "Home", new { type = type })" class="btn btn-dropbox">
                         <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày chẵn
                     </a>
-                    <a href="@Url.Action("TimKiemNoKhachHang1", "Home")" class="btn btn-dropbox">
+                    <a href="@Url.Action("TimKiemNoKhachHang1", "Home", new { type = type })" class="btn btn-dropbox">
                         <i class="fa fa-search"></i>&nbsp;Tìm khách hàng nợ ngày lẻ
                     </a>
                 </div>
                 <form class="form-horizontal" role="search" action="/Home/Search" style="height:50px; margin-bottom:50px;margin-top:10px">
+                    <input type="hidden" value="@type" name="type" id="type" />
                     <div class="form-group">
                         <label for="txtName" class="col-sm-2 control-label">Tên khách hàng:</label>
                         <div class="col-sm-2">
@@ -580,373 +545,373 @@ else
                                     count++;
                                     if (p.DayPaids == day || p.Description == "End")
                                     {
-                                    <tr style="color:green">
-                                        <td>@p.CodeSort</td>
-                                        @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
+                                        <tr style="color:green">
+                                            <td>@p.CodeSort</td>
+                                            @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
                                             {
-                                            <td>@p.Code[0]</td>
-                                            <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
+                                                <td>@p.Code[0]</td>
+                                                <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
                                             }
                                             else
                                             {
-                                            <td></td>
-                                            <td>@Int32.Parse(p.Code)</td>
+                                                <td></td>
+                                                <td>@Int32.Parse(p.Code)</td>
                                             }
-                                        <td>
-                                            <p style="text-decoration: underline">@p.Name</p>
-                                            <p>@p.Address</p>
-                                            @if (p.OldCode != null)
-                                                {
-                                                <p style="color: blue">Mã số cũ:@p.OldCode </p>
-                                                }
-                                        </td>
-                                        <td>
-                                            @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
-                                        </td>
-                                        @if (p.Loan == null)
-                                            {
-                                            <td style="color: red">
-                                                Warning
-                                                <p>@p.DayBonus</p>
-                                                <p style="color: blue">@p.Note</p>
-                                            </td>
-                                            }
-                                            else
-                                            {
                                             <td>
-                                                @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
-                                                <p style="color: blue">@p.Note</p>
+                                                <p style="text-decoration: underline">@p.Name</p>
+                                                <p>@p.Address</p>
+                                                @if (p.OldCode != null)
+                                                {
+                                                    <p style="color: blue">Mã số cũ:@p.OldCode </p>
+                                                }
                                             </td>
+                                            <td>
+                                                @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
+                                            </td>
+                                            @if (p.Loan == null)
+                                            {
+                                                <td style="color: red">
+                                                    Warning
+                                                    <p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
                                             }
 
-                                        @if (p.Price == null)
+                                            @if (p.Price == null)
                                             {
-                                            <td style="color: red">Warning</td>
+                                                <td style="color: red">Warning</td>
                                             }
                                             else
                                             {
-                                            <td>
-                                                @string.Format("{0:N0}", p.Price)<p>
-                                                    <font color="red">@day</font>
-                                                </p>
-                                            </td>
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Price)<p>
+                                                        <font color="red">@day</font>
+                                                    </p>
+                                                </td>
                                             }
-                                        <td>
-                                            @if (p.AmountPaid == null)
+                                            <td>
+                                                @if (p.AmountPaid == null)
                                                 {
                                                     p.AmountPaid = 0;
                                                 }
-                                            @if (p.RemainingAmount == null)
+                                                @if (p.RemainingAmount == null)
                                                 {
                                                     p.RemainingAmount = 0;
                                                 }
-                                            <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
-                                            <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
-                                            <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
-                                            <p>Số ngày đã trả : @p.DayPaids</p>
-                                        </td>
-                                        <td>
-                                            <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
-                                            @foreach (Loan i in t)
+                                                <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
+                                                <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
+                                                <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
+                                                <p>Số ngày đã trả : @p.DayPaids</p>
+                                            </td>
+                                            <td>
+                                                <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
+                                                @foreach (Loan i in t)
                                                 {
-                                                <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
+                                                    <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
 
                                                     if (us.Permission == 1 && p.Description != "End")
                                                     {
                                                         if (i.Status == 0)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                         if (i.Status == 1)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                     }
                                                     else
                                                     {
                                                         if (i.Status == 0)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                         if (i.Status == 1)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                     }
 
                                                 }
-                                        </td>
-                                        <td style="width: 100px">
-                                            <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
-                                                <i class="glyphicon glyphicon-eye-open"></i>
-                                            </a>
-                                            @if (us.Permission == 1)
+                                            </td>
+                                            <td style="width: 100px">
+                                                <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                                </a>
+                                                @if (us.Permission == 1)
                                                 {
-                                                <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
 
-                                                <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
-                                                    <i class="fa fa-pencil"></i>
-                                                </a>
-                                                <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ">
-                                                    <i class="fa fa-refresh"></i>
-                                                </a>
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code,type = type})" role="button" title="Chỉnh sửa">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </a>
                                                 }
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     }
                                     else if (p.NgayNo >= 3 + Int32.Parse(p.DayBonus.ToString()))
                                     {
-                                    <tr style="color:red" id="effect_@(p.Code)">
-                                        <td>@p.CodeSort</td>
-                                        @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
+                                        <tr style="color:red" id="effect_@(p.Code)">
+                                            <td>@p.CodeSort</td>
+                                            @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
                                             {
-                                            <td>@p.Code[0]</td>
-                                            <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
+                                                <td>@p.Code[0]</td>
+                                                <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
                                             }
                                             else
                                             {
-                                            <td></td>
-                                            <td>@Int32.Parse(p.Code)</td>
+                                                <td></td>
+                                                <td>@Int32.Parse(p.Code)</td>
                                             }
-                                        <td>
-                                            <p style="text-decoration: underline">@p.Name</p>
-                                            <p>@p.Address</p>
-                                            @if (p.OldCode != null)
-                                                {
-                                                <p style="color: blue">Mã số cũ:@p.OldCode </p>
-                                                }
-                                        </td>
-                                        <td>
-                                            @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
-                                        </td>
-                                        @if (p.Loan == null)
-                                            {
-                                            <td style="color: red">
-                                                Warning
-                                                <p>@p.DayBonus</p>
-                                                <p style="color: blue">@p.Note</p>
-                                            </td>
-                                            }
-                                            else
-                                            {
                                             <td>
-                                                @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
-                                                <p style="color: blue">@p.Note</p>
+                                                <p style="text-decoration: underline">@p.Name</p>
+                                                <p>@p.Address</p>
+                                                @if (p.OldCode != null)
+                                                {
+                                                    <p style="color: blue">Mã số cũ:@p.OldCode </p>
+                                                }
                                             </td>
+                                            <td>
+                                                @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
+                                            </td>
+                                            @if (p.Loan == null)
+                                            {
+                                                <td style="color: red">
+                                                    Warning
+                                                    <p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
                                             }
 
-                                        @if (p.Price == null)
+                                            @if (p.Price == null)
                                             {
-                                            <td style="color: red">Warning</td>
+                                                <td style="color: red">Warning</td>
                                             }
                                             else
                                             {
-                                            <td>
-                                                @string.Format("{0:N0}", p.Price)<p>
-                                                    <font color="red">@day</font>
-                                                </p>
-                                            </td>
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Price)<p>
+                                                        <font color="red">@day</font>
+                                                    </p>
+                                                </td>
                                             }
-                                        <td>
-                                            @if (p.AmountPaid == null)
+                                            <td>
+                                                @if (p.AmountPaid == null)
                                                 {
                                                     p.AmountPaid = 0;
                                                 }
-                                            @if (p.RemainingAmount == null)
+                                                @if (p.RemainingAmount == null)
                                                 {
                                                     p.RemainingAmount = 0;
                                                 }
-                                            <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
-                                            <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
-                                            <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
-                                            <p>Số ngày đã trả : @p.DayPaids</p>
-                                        </td>
-                                        <td>
-                                            <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
-                                            @foreach (Loan i in t)
+                                                <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
+                                                <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
+                                                <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
+                                                <p>Số ngày đã trả : @p.DayPaids</p>
+                                            </td>
+                                            <td>
+                                                <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
+                                                @foreach (Loan i in t)
                                                 {
-                                                <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
+                                                    <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
 
                                                     if (us.Permission == 1 && p.Description != "End")
                                                     {
                                                         if (i.Status == 0)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                         if (i.Status == 1)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                     }
                                                     else
                                                     {
                                                         if (i.Status == 0)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                         if (i.Status == 1)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                     }
                                                 }
-                                        </td>
-                                        <td style="width: 100px">
-                                            <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
-                                                <i class="glyphicon glyphicon-eye-open"></i>
-                                            </a>
-                                            @if (us.Permission == 1)
+                                            </td>
+                                            <td style="width: 100px">
+                                                <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                                </a>
+                                                @if (us.Permission == 1)
                                                 {
-                                                <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
 
-                                                <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
-                                                    <i class="fa fa-pencil"></i>
-                                                </a>
-                                                <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
-                                                    <i class="fa fa-refresh"></i>
-                                                </a>
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code,type = type})" role="button" title="Chỉnh sửa">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </a>
                                                 }
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     }
                                     else
                                     {
-                                    <tr id="effect_@(p.Code)">
-                                        <td>@p.CodeSort</td>
-                                        @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
+                                        <tr id="effect_@(p.Code)">
+                                            <td>@p.CodeSort</td>
+                                            @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
                                             {
-                                            <td>@p.Code[0]</td>
-                                            <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
+                                                <td>@p.Code[0]</td>
+                                                <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
                                             }
                                             else
                                             {
-                                            <td></td>
-                                            <td>@Int32.Parse(p.Code)</td>
+                                                <td></td>
+                                                <td>@Int32.Parse(p.Code)</td>
                                             }
-                                        <td>
-                                            <p style="text-decoration: underline">@p.Name</p>
-                                            <p>@p.Address</p>
-                                            @if (p.OldCode != null)
-                                                {
-                                                <p style="color: blue">Mã số cũ:@p.OldCode </p>
-                                                }
-                                        </td>
-                                        <td>
-                                            @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
-                                        </td>
-                                        @if (p.Loan == null)
-                                            {
-                                            <td style="color: red">
-                                                Warning
-                                                <p>@p.DayBonus</p>
-                                                <p style="color: blue">@p.Note</p>
-                                            </td>
-                                            }
-                                            else
-                                            {
                                             <td>
-                                                @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
-                                                <p style="color: blue">@p.Note</p>
+                                                <p style="text-decoration: underline">@p.Name</p>
+                                                <p>@p.Address</p>
+                                                @if (p.OldCode != null)
+                                                {
+                                                    <p style="color: blue">Mã số cũ:@p.OldCode </p>
+                                                }
                                             </td>
+                                            <td>
+                                                @p.StartDate.ToString("dd/MM/yyyy")<p>@p.Phone</p>
+                                            </td>
+                                            @if (p.Loan == null)
+                                            {
+                                                <td style="color: red">
+                                                    Warning
+                                                    <p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Loan)<p>@p.DayBonus</p>
+                                                    <p style="color: blue">@p.Note</p>
+                                                </td>
                                             }
 
-                                        @if (p.Price == null)
+                                            @if (p.Price == null)
                                             {
-                                            <td style="color: red">Warning</td>
+                                                <td style="color: red">Warning</td>
                                             }
                                             else
                                             {
-                                            <td>
-                                                @string.Format("{0:N0}", p.Price)<p>
-                                                    <font color="red">@day</font>
-                                                </p>
-                                            </td>
+                                                <td>
+                                                    @string.Format("{0:N0}", p.Price)<p>
+                                                        <font color="red">@day</font>
+                                                    </p>
+                                                </td>
                                             }
-                                        <td>
-                                            @if (p.AmountPaid == null)
+                                            <td>
+                                                @if (p.AmountPaid == null)
                                                 {
                                                     p.AmountPaid = 0;
                                                 }
-                                            @if (p.RemainingAmount == null)
+                                                @if (p.RemainingAmount == null)
                                                 {
                                                     p.RemainingAmount = 0;
                                                 }
-                                            <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
-                                            <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
-                                            <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
-                                            <p>Số ngày đã trả : @p.DayPaids</p>
-                                        </td>
-                                        <td>
-                                            <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
-                                            @foreach (Loan i in t)
+                                                <input style="width: 100px" type="text" readonly="" id="amount_@(p.Code)" value="@p.AmountPaid" />
+                                                <input style="width: 100px" type="text" readonly="" id="remain_@(p.Code)" value="@p.RemainingAmount" />
+                                                <input style="width: 100px" type="text" readonly="" id="ct_@(p.Code)" />
+                                                <p>Số ngày đã trả : @p.DayPaids</p>
+                                            </td>
+                                            <td>
+                                                <input style="width: 50px" type="text" id="songaydong_@(p.Code)" name="songaydong_@(p.Code)" class="form-control" />
+                                                @foreach (Loan i in t)
                                                 {
-                                                <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
+                                                    <input type="hidden" id="IDCUS_@(i.ID)" name="IDCUS_@(i.ID)" value="@p.Code" />
 
                                                     if (us.Permission == 1 && p.Description != "End")
                                                     {
                                                         if (i.Status == 0)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                         if (i.Status == 1)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)" onclick="return chuadongtien1(@i.ID);">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                     }
                                                     else
                                                     {
                                                         if (i.Status == 0)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-danger" title="Chưa đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                         if (i.Status == 1)
                                                         {
-                                                <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
-                                                    @i.Date.ToString("dd.MM")
-                                                </a>
+                                                            <a style="width: 35px; text-align: left; float: left" class="btn btn-success" title="Đã đóng tiền" role="button" id="item_@(i.ID)">
+                                                                @i.Date.ToString("dd.MM")
+                                                            </a>
                                                         }
                                                     }
                                                 }
-                                        </td>
-                                        <td style="width: 100px">
-                                            <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
-                                                <i class="glyphicon glyphicon-eye-open"></i>
-                                            </a>
-                                            @if (us.Permission == 1)
+                                            </td>
+                                            <td style="width: 100px">
+                                                <a href="@Url.Action("Detail", "Home", new {id = @p.Code})" role="button" title="Chi tiết">
+                                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                                </a>
+                                                @if (us.Permission == 1)
                                                 {
-                                                <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
+                                                    <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
 
-                                                <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
-                                                    <i class="fa fa-pencil"></i>
-                                                </a>
-                                                <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
-                                                    <i class="fa fa-refresh"></i>
-                                                </a>
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code,type = type})" role="button" title="Chỉnh sửa">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                    <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </a>
                                                 }
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     }
                                 }
                             </tbody>

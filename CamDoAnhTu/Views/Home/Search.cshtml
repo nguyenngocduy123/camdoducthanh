@@ -19,7 +19,7 @@
     }
 
     List<Loan> t = (List<Loan>)ViewData["Loans"];
-
+    int type = (int)ViewBag.type;
 }
 @section css{
     <!-- DataTables CSS -->
@@ -325,7 +325,7 @@
                     </a>
                     @if (us != null && us.Permission == 1)
                     {
-                        <a href="@Url.Action("AddCustomer", "Home")" class="btn btn-default">
+                        <a href="@Url.Action("AddCustomer", "Home", new { type = type })" class="btn btn-default">
                             <i class="fa fa-plus"></i>&nbsp;Thêm khách hàng
                         </a>
                     }
@@ -440,7 +440,7 @@ else
                     </a>
                     @if (us != null && us.Permission == 1)
                     {
-                        <a href="@Url.Action("AddCustomer", "Home")" class="btn btn-default">
+                        <a href="@Url.Action("AddCustomer", "Home", new { type = type })" class="btn btn-default">
                             <i class="fa fa-plus"></i>&nbsp;Thêm khách hàng
                         </a>
                     }
@@ -696,7 +696,7 @@ else
                                                 {
                                                     <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
 
-                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code,type = type})" role="button" title="Chỉnh sửa">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
                                                     <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ">
@@ -819,7 +819,7 @@ else
                                                 {
                                                     <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
 
-                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code,type = type})" role="button" title="Chỉnh sửa">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
                                                     <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
@@ -942,7 +942,7 @@ else
                                                 {
                                                     <a class="btn btn-danger btn-xs" href="javascript:" onclick="confirm('Bạn có thật sự muốn xóa?') ? deleteCus('@p.Code') : null"><i class="fa fa-remove"></i></a>
 
-                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code})" role="button" title="Chỉnh sửa">
+                                                    <a class="btn btn-primary btn-xs" href="@Url.Action("Update", "Home", new {id = @p.Code,type = type})" role="button" title="Chỉnh sửa">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
                                                     <a class="btn btn-primary btn-xs" role="button" title="Kết thúc dây nợ" onclick="return effect(@k.ID);">
@@ -958,18 +958,18 @@ else
                         <nav style="margin-top:20px; margin-left:50px">
                             <ul class="pagination">
                                 <li class="@(ViewBag.CurPage==1 ? "disabled": "")">
-                                    <a href="@Url.Action("Search", "Home", new { Code = ViewBag.Code ,Name=ViewBag.Name, Phone = ViewBag.Phone, Noxau = ViewBag.Noxau, hetno = ViewBag.hetno, page = ViewBag.CurPage - 1 })" aria-label="Pre aria-label=" previous">
+                                    <a href="@Url.Action("Search", "Home", new { Code = ViewBag.Code ,Name=ViewBag.Name, Phone = ViewBag.Phone, Noxau = ViewBag.Noxau, hetno = ViewBag.hetno, page = ViewBag.CurPage - 1, type = ViewBag.type })" aria-label="Pre aria-label=" previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
                                 @for (int i = 1; i <= ViewBag.PageCount; i++)
                                 {
                                     <li class="@(ViewBag.CurPage==i ? "active": "")">
-                                        <a href="@Url.Action("Search", "Home", new { Code = ViewBag.Code ,Name=ViewBag.Name, Phone = ViewBag.Phone, Noxau = ViewBag.Noxau, hetno = ViewBag.hetno, page = i})">@i</a>
+                                        <a href="@Url.Action("Search", "Home", new { Code = ViewBag.Code ,Name=ViewBag.Name, Phone = ViewBag.Phone, Noxau = ViewBag.Noxau, hetno = ViewBag.hetno, page = i, type = ViewBag.type})">@i</a>
                                     </li>
                                 }
                                 <li class="@(ViewBag.CurPage==ViewBag.PageCount ? "disabled": "")">
-                                    <a href="@Url.Action("Search", "Home", new { Code = ViewBag.Code ,Name=ViewBag.Name, Phone = ViewBag.Phone, Noxau = ViewBag.Noxau, hetno = ViewBag.hetno, page = ViewBag.CurPage + 1 })" aria-label="Nex aria-label=" next">
+                                    <a href="@Url.Action("Search", "Home", new { Code = ViewBag.Code ,Name=ViewBag.Name, Phone = ViewBag.Phone, Noxau = ViewBag.Noxau, hetno = ViewBag.hetno, page = ViewBag.CurPage + 1, type = ViewBag.type })" aria-label="Nex aria-label=" next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>

@@ -1,26 +1,154 @@
 ﻿@using CamDoAnhTu.Models;
 
 @model List<Customer>
+@{
+    int type = (int)ViewBag.type;
+}
 
-<div class="col-lg-3 col-md-6">
-    <div class="panel panel-green">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-xs-3">
-                    <i class="fa fa-task fa-5x"></i>
+@switch (type)
+{
+    case 1:
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-green">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-task fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">@Model.Count</div>
+                            <div>Khách hàng bình thường</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-xs-9 text-right">
-                    <div class="huge">@Model.Count</div>
-                    <div>Khách hàng bình thường</div>
-                </div>
+                <a href="@Url.Action("LoadCustomer", "Home", new { type = type })">
+                    <div class="panel-footer">
+                        <span class="pull-left">Xem</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
         </div>
-        <a href="@Url.Action("LoadCustomer", "Home")">
-            <div class="panel-footer">
-                <span class="pull-left">Xem</span>
-                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                <div class="clearfix"></div>
+        break;
+    case 5:
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bank fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">@Model.Count</div>
+                            <div>AN</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("LoadCustomerAN", "Home",  new { type = type })">
+                    <div class="panel-footer">
+                        <span class="pull-left">Xem</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
             </div>
-        </a>
-    </div>
-</div>
+        </div>
+        break;
+    case 8:
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-barcode fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">@Model.Count</div>
+                            <div>AX</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("LoadCustomerAX", "Home",  new { type = type })">
+                    <div class="panel-footer">
+                        <span class="pull-left">Xem</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        break;
+    case 9:
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bars fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">@Model.Count</div>
+                            <div>AD</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("LoadCustomerAD", "Home",  new { type = type })">
+                    <div class="panel-footer">
+                        <span class="pull-left">Xem</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        break;
+    case 10:
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-group">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-automobile fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">@Model.Count</div>
+                            <div>AB</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("LoadCustomerAB", "Home" ,  new { type = type })">
+                    <div class="panel-footer">
+                        <span class="pull-left">Xem</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        break;
+    case 11:
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-book fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">@Model.Count</div>
+                            <div>AC</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="@Url.Action("LoadCustomerAC", "Home",  new { type = type })">
+                    <div class="panel-footer">
+                        <span class="pull-left">Xem</span>
+                        <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                        <div class="clearfix"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+        break;
+}

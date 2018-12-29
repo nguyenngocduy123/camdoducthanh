@@ -5,9 +5,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@{
-    int day;
-}
 
 @section css{
     <!-- DataTables CSS -->
@@ -37,10 +34,10 @@
                 "serverSide": true,
                 "filter": true,
                 "ajax": {
-                    "url": "/Home/TimKiemNoKhachHang",
+                    "url": "/TimKiemNoKhachHang/LoadData",
                     "type": "POST",
                     "datatype": "json"
-                },  
+                },
                 columnDefs: [
                     {
                         "targets": [0],
@@ -48,9 +45,10 @@
                     }
                 ],
                 "columns": [
-                    { "data": "CustomerID", "name": "CustomerID", "autoWidth": true },
-                    
-                ]  
+                    { "data": "Code", "name": "Code", "autoWidth": true }, 
+                    { "data": "Name", "name": "Name", "autoWidth": true }, 
+
+                ]
             });
 
             $('#min, #max').keyup(function () {
@@ -60,21 +58,21 @@
 
 
         $.fn.dataTable.ext.search.push(
-    function (settings, data, dataIndex) {
-        var min = parseInt($('#min').val(), 10);
-        var max = parseInt($('#max').val(), 10);
+            function (settings, data, dataIndex) {
+                var min = parseInt($('#min').val(), 10);
+                var max = parseInt($('#max').val(), 10);
 
-        var age = parseFloat(data[1]) || 0; // use data for the age column
+                var age = parseFloat(data[1]) || 0; // use data for the age column
 
-        if ((isNaN(min) && isNaN(max)) ||
-             (isNaN(min) && age <= max) ||
-             (min <= age && isNaN(max)) ||
-             (min <= age && age <= max)) {
-            return true;
-        }
-        return false;
-    }
-);
+                if ((isNaN(min) && isNaN(max)) ||
+                    (isNaN(min) && age <= max) ||
+                    (min <= age && isNaN(max)) ||
+                    (min <= age && age <= max)) {
+                    return true;
+                }
+                return false;
+            }
+        );
 
     </script>
 
@@ -109,23 +107,23 @@
             <td>Số ngày đã nợ</td>
         </tr>
     </thead>
-    <tbody>
-        @foreach (Customer p in Model)
-        {
-            if (p.Price == null || Int32.Parse(p.Price.ToString()) == 0)
+    @*<tbody>
+            @foreach (Customer p in Model)
             {
-                day = 0;
+                if (p.Price == null || Int32.Parse(p.Price.ToString()) == 0)
+                {
+                    day = 0;
+                }
+                else
+                {
+                    day = Int32.Parse(p.Loan.ToString()) / Int32.Parse(p.Price.ToString());
+                }
+                <tr>
+                    <td>@p.Code-@p.Name-@p.Address-@p.Price-@day<p>@p.Phone</p></td>
+                    <td>@p.NgayNo</td>
+                </tr>
             }
-            else
-            {
-                day = Int32.Parse(p.Loan.ToString()) / Int32.Parse(p.Price.ToString());
-            }
-            <tr>
-                <td>@p.Code-@p.Name-@p.Address-@p.Price-@day<p>@p.Phone</p></td>
-                <td>@p.NgayNo</td>
-            </tr>
-        }
-    </tbody>
+        </tbody>*@
 </table>
 
 
