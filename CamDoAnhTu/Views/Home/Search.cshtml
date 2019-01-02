@@ -1,4 +1,5 @@
 ﻿@using CamDoAnhTu.Models
+@using System.Text.RegularExpressions
 
 @model List<Customer>
 @{
@@ -73,7 +74,7 @@
                 "iDisplayLength": 10,
                 "aLengthMenu": [[1, 10, 25, 50, 100, 500, 1000, -1], [1, 10, 25, 50, 100, 500, 1000, "All"]],
                 "columnDefs": [
-    { "visible": false, "targets": 0 }
+                    { "visible": false, "targets": 0 }
                 ]
             });
 
@@ -473,7 +474,7 @@ else
                     <div class="form-group">
                         <label for="txtName" class="col-sm-2 control-label">Nợ xấu: </label>
                         <div class="col-sm-2">
-                            <input type="checkbox"  class="checkbox" id="Noxau" name="Noxau" value="@ViewBag.Noxau == null ? 1 : @ViewBag.Noxau" />
+                            <input type="checkbox" class="checkbox" id="Noxau" name="Noxau" value="@ViewBag.Noxau == null ? 1 : @ViewBag.Noxau" />
                         </div>
                         <label for="txtName" class="col-sm-2 control-label">Hết nợ: </label>
                         <div class="col-sm-2">
@@ -588,8 +589,8 @@ else
                                             <td>@p.CodeSort</td>
                                             @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
                                             {
-                                                <td>@p.Code[0]</td>
-                                                <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
+                                                <td>@Regex.Replace(p.Code, @"[\d-]", string.Empty)</td>
+                                                <td>@Regex.Replace(p.Code, "[^0-9]+", string.Empty)</td>
                                             }
                                             else
                                             {
@@ -712,8 +713,8 @@ else
                                             <td>@p.CodeSort</td>
                                             @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
                                             {
-                                                <td>@p.Code[0]</td>
-                                                <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
+                                                <td>@Regex.Replace(p.Code, @"[\d-]", string.Empty)</td>
+                                                <td>@Regex.Replace(p.Code, "[^0-9]+", string.Empty)</td>
                                             }
                                             else
                                             {
@@ -835,8 +836,8 @@ else
                                             <td>@p.CodeSort</td>
                                             @if ((p.Code[0] >= 'A' && p.Code[0] <= 'Z') || (p.Code[0] >= 'a' && p.Code[0] <= 'z'))
                                             {
-                                                <td>@p.Code[0]</td>
-                                                <td>@Int32.Parse(p.Code.Substring(1, p.Code.Length - 1))</td>
+                                                <td>@Regex.Replace(p.Code, @"[\d-]", string.Empty)</td>
+                                                <td>@Regex.Replace(p.Code, "[^0-9]+", string.Empty)</td>
                                             }
                                             else
                                             {
