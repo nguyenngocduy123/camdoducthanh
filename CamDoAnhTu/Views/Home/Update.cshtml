@@ -1,8 +1,7 @@
-﻿
-
-@{
+﻿@{
     ViewBag.Title = "Update";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int type = (int)ViewBag.type;
 }
 
 @model CamDoAnhTu.Models.Customer
@@ -172,7 +171,7 @@
     </script>
 
 }
-<a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+<a class="btn btn-success" href="@Url.Action("LoadCustomer","Home", new {type = type })" role="button">
     <i class="fa fa-mail-reply"></i>Trang khách hàng
 </a>
 <h2 style="font-size: 30px; color: red;border: firebrick">Chỉnh sửa thông tin khách hàng</h2>

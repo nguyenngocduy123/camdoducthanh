@@ -16,12 +16,13 @@
     <Property Name="StartDate" Type="datetime" Nullable="false" />
     <Property Name="Description" Type="nvarchar" MaxLength="100" />
     <Property Name="NgayNo" Type="int" />
-    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="DayBonus" Type="int" />
     <Property Name="OldCode" Type="varchar" MaxLength="50" />
     <Property Name="Note" Type="nvarchar" MaxLength="1000" />
     <Property Name="CodeSort" Type="int" />
     <Property Name="type" Type="int" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="IsEven" Type="bit" />
   </EntityType>
   <EntityType Name="Loan">
     <Key>
@@ -29,8 +30,8 @@
     </Key>
     <Property Name="Date" Type="datetime" Nullable="false" />
     <Property Name="IDCus" Type="varchar" MaxLength="50" Nullable="false" />
-    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Status" Type="int" Nullable="false" />
+    <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
   </EntityType>
   <EntityType Name="Users">
     <Key>

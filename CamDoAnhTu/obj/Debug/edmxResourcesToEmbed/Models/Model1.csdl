@@ -23,6 +23,7 @@
     <Property Name="CodeSort" Type="Int32" />
     <Property Name="type" Type="Int32" />
     <NavigationProperty Name="Loans" Relationship="cama18da_camdoducthinhModel.CustomerLoan" FromRole="Customer" ToRole="Loan" />
+    <Property Name="IsEven" Type="Boolean" />
   </EntityType>
   <EntityType Name="Loan">
     <Key>

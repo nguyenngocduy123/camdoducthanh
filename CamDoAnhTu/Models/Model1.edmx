@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="cama18da_camdoducthinhModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="cama18da_camdoducthinhModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="Code" />
@@ -21,12 +21,13 @@
           <Property Name="StartDate" Type="datetime" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="100" />
           <Property Name="NgayNo" Type="int" />
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DayBonus" Type="int" />
           <Property Name="OldCode" Type="varchar" MaxLength="50" />
           <Property Name="Note" Type="nvarchar" MaxLength="1000" />
           <Property Name="CodeSort" Type="int" />
           <Property Name="type" Type="int" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsEven" Type="bit" />
         </EntityType>
         <EntityType Name="Loan">
           <Key>
@@ -34,8 +35,8 @@
           </Key>
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="IDCus" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Status" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -51,8 +52,7 @@
           <EntitySet Name="Loan" EntityType="Self.Loan" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="cama18da_camdoducthinhModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -79,6 +79,7 @@
           <Property Name="CodeSort" Type="Int32" />
           <Property Name="type" Type="Int32" />
           <NavigationProperty Name="Loans" Relationship="cama18da_camdoducthinhModel.CustomerLoan" FromRole="Customer" ToRole="Loan" />
+          <Property Name="IsEven" Type="Boolean" />
         </EntityType>
         <EntityType Name="Loan">
           <Key>
@@ -129,6 +130,7 @@
           <EntitySetMapping Name="Customers">
             <EntityTypeMapping TypeName="cama18da_camdoducthinhModel.Customer">
               <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="IsEven" ColumnName="IsEven" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Phone" ColumnName="Phone" />
                 <ScalarProperty Name="Address" ColumnName="Address" />

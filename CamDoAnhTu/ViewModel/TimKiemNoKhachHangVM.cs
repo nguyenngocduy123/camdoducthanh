@@ -12,5 +12,7 @@ namespace CamDoAnhTu.ViewModel
         public string Address { get; set; }
         public string Code { get; set; }
         public decimal? Price { get; set; }
+        public int NgayNo { get; set; }
+        public int CodeSort { get; set; }
     }
 }

@@ -57,7 +57,7 @@ namespace CamDoAnhTu.Controllers
                     sortDir = model.order[0].dir.ToLower() == "asc";
                 }
 
-                var whereClause = BuildDynamicWhereClause(ctx, searchBy);
+                var whereClause = BuildDynamicWhereClause(ctx, searchBy, model);
 
                 if (String.IsNullOrEmpty(searchBy))
                 {
@@ -67,48 +67,53 @@ namespace CamDoAnhTu.Controllers
 
                 var result = ctx.Customers
                                .Where(whereClause)
-
                                .Select(m => new TimKiemNoKhachHangVM
                                {
                                    Name = m.Name,
                                    Code = m.Code,
                                    Address = m.Address,
                                    Price = m.Price,
-                                   Phone = m.Phone
-
+                                   Phone = m.Phone,
+                                   NgayNo = m.NgayNo.Value,
+                                   CodeSort = m.CodeSort.Value
                                })
-                               .OrderBy(sortBy, sortDir)
+                               .OrderBy(m => m.CodeSort) // sortby sortdir
                                .Skip(skip)
                                .Take(take);
-
-                var abc  = (from p in result
-                          where Convert.ToInt32(p.Code[p.Code.Length - 1]) % 2 == 0
-                          select p).ToList();
 
                 filteredResultsCount = ctx.Customers.AsExpandable().Where(whereClause).Count();
                 totalResultsCount = ctx.Customers.Count();
 
-                if (abc == null)
-                {
-                    return new List<TimKiemNoKhachHangVM>();
-                }
-                return abc;
+                return result.ToList();
             }
         }
 
-        private Expression<Func<Customer, bool>> BuildDynamicWhereClause(CamdoAnhTuEntities1 entities, string searchValue)
+        private Expression<Func<Customer, bool>> BuildDynamicWhereClause(CamdoAnhTuEntities1 entities, string searchValue,
+            DataTableAjaxPostModel model)
         {
 
             var predicate = PredicateBuilder.New<Customer>(true); // true -where(true) return all
-            
-           
+            predicate = predicate.And(s => s.IsEven == model.iseven);
+            predicate = predicate.And(s => s.type == model.type);
+
+            if (Int32.TryParse(model.min,out int minVal))
+            {
+                predicate = predicate.And(s => s.NgayNo >= minVal);
+            }
+
+            if (Int32.TryParse(model.max, out int maxval))
+            {
+                predicate = predicate.And(s => s.NgayNo <= maxval);
+            }
+
             if (String.IsNullOrWhiteSpace(searchValue) == false)
             {
                 var searchTerms = searchValue.Split(' ').ToList().ConvertAll(x => x.ToLower());
 
-
                 predicate = predicate.Or(s => searchTerms.Any(srch => s.Code.ToLower().Contains(srch)));
                 predicate = predicate.Or(s => searchTerms.Any(srch => s.Address.ToLower().Contains(srch)));
+                //predicate = predicate.And(s => (Convert.ToInt32(s.Code.Remove(0, 1)) % 2) == 0);
+               
             }
             return predicate;
         }

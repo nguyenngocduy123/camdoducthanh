@@ -4,6 +4,7 @@
     <EntitySetMapping Name="Customers">
       <EntityTypeMapping TypeName="cama18da_camdoducthinhModel.Customer">
         <MappingFragment StoreEntitySet="Customer">
+          <ScalarProperty Name="IsEven" ColumnName="IsEven" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Phone" ColumnName="Phone" />
           <ScalarProperty Name="Address" ColumnName="Address" />

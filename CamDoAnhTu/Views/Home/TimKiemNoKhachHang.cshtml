@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "TimKiemNoKhachHang";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int type = ViewBag.type;
 }
 
 
@@ -36,17 +37,28 @@
                 "ajax": {
                     "url": "/TimKiemNoKhachHang/LoadData",
                     "type": "POST",
-                    "datatype": "json"
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.type = @type;
+                        d.iseven = true;
+                        d.min = parseInt($('#min').val(), 10);
+                        d.max = parseInt($('#max').val(), 10);
+                    }
                 },
-                columnDefs: [
+                "columnDefs": [
                     {
                         "targets": [0],
-                        "searchable": false
-                    }
+                        "searchable": false,
+                        "render": function (data, type, row) {
+
+                            return data + '-' + row.Name + '-' + row.Address + '<br>' + '<a href=tel:' + row.Phone + '>' + row.Phone + '</a>';
+                        },
+                    },
+
                 ],
                 "columns": [
-                    { "data": "Code", "name": "Code", "autoWidth": true }, 
-                    { "data": "Name", "name": "Name", "autoWidth": true }, 
+                    { "data": "Code", "name": "Code", "autoWidth": true },
+                    { "data": "NgayNo", "name": "NgayNo", "autoWidth": true },
 
                 ]
             });

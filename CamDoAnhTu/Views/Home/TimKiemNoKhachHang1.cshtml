@@ -3,11 +3,9 @@
 @{
     ViewBag.Title = "TimKiemNoKhachHang";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int type = ViewBag.type;
 }
 
-@{
-    int day;
-}
 
 @section css{
     <!-- DataTables CSS -->
@@ -33,11 +31,35 @@
             var table = $('#dataTables-example1').DataTable({
                 "responsive": true,
                 "ordering": false,
-                columnDefs: [
+                "processing": true,
+                "serverSide": true,
+                "filter": true,
+                "ajax": {
+                    "url": "/TimKiemNoKhachHang/LoadData",
+                    "type": "POST",
+                    "datatype": "json",
+                    "data": function (d) {
+                        d.type = @type;
+                        d.iseven = false;
+                        d.min = parseInt($('#min').val(), 10);
+                        d.max = parseInt($('#max').val(), 10);
+                    }
+                },
+                "columnDefs": [
                     {
                         "targets": [0],
-                        "searchable": false
-                    }
+                        "searchable": false,
+                        "render": function (data, type, row) {
+
+                            return data + '-' + row.Name + '-' + row.Address + '<br>' + '<a href=tel:' + row.Phone + '>' + row.Phone + '</a>';
+                        },
+                    },
+
+                ],
+                "columns": [
+                    { "data": "Code", "name": "Code", "autoWidth": true },
+                    { "data": "NgayNo", "name": "NgayNo", "autoWidth": true },
+
                 ]
             });
 
@@ -45,24 +67,6 @@
                 table.draw();
             });
         });
-
-
-        $.fn.dataTable.ext.search.push(
-    function (settings, data, dataIndex) {
-        var min = parseInt($('#min').val(), 10);
-        var max = parseInt($('#max').val(), 10);
-
-        var age = parseFloat(data[1]) || 0; // use data for the age column
-
-        if ((isNaN(min) && isNaN(max)) ||
-             (isNaN(min) && age <= max) ||
-             (min <= age && isNaN(max)) ||
-             (min <= age && age <= max)) {
-            return true;
-        }
-        return false;
-    }
-);
 
     </script>
 
@@ -97,23 +101,23 @@
             <td>Số ngày đã nợ</td>
         </tr>
     </thead>
-    <tbody>
-        @foreach (Customer p in Model)
-        {
-            if (p.Price == null || Int32.Parse(p.Price.ToString()) == 0)
+    @*<tbody>
+            @foreach (Customer p in Model)
             {
-                day = 0;
+                if (p.Price == null || Int32.Parse(p.Price.ToString()) == 0)
+                {
+                    day = 0;
+                }
+                else
+                {
+                    day = Int32.Parse(p.Loan.ToString()) / Int32.Parse(p.Price.ToString());
+                }
+                <tr>
+                    <td>@p.Code-@p.Name-@p.Address-@p.Price-@day<p>@p.Phone</p></td>
+                    <td>@p.NgayNo</td>
+                </tr>
             }
-            else
-            {
-                day = Int32.Parse(p.Loan.ToString()) / Int32.Parse(p.Price.ToString());
-            }
-            <tr>
-                <td>@p.Code-@p.Name-@p.Address-@p.Price-@day<p>@p.Phone</p></td>
-                <td>@p.NgayNo</td>
-            </tr>
-        }
-    </tbody>
+        </tbody>*@
 </table>
 
 

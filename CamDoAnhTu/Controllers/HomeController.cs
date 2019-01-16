@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -77,6 +78,19 @@ namespace CamDoAnhTu.Controllers
 
             using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
             {
+                //var cs1 = ctx.Customers.ToList();
+
+                //foreach (var item in cs1)
+                //{
+                //    if (Int32.Parse(item.Code[item.Code.Length - 1].ToString()) % 2 == 0)
+                //    {
+                //        item.IsEven = true;
+                //    }
+                //    else
+                //        item.IsEven = false;
+                //}
+
+
                 ctx.Configuration.ValidateOnSaveEnabled = false;
                 var query1 = ctx.Customers.Where(p => p.type == type).ToList();
                 int count1 = query1.Count();
@@ -151,6 +165,24 @@ namespace CamDoAnhTu.Controllers
                     cs.NgayNo = countMax;
                     ctx.SaveChanges();
                 }
+
+                var summoney = (from l in ctx.Loans
+                                join cs in ctx.Customers on l.IDCus equals cs.Code
+                                where cs.type == 5 && l.Date.Year == DateTime.Now.Year 
+                                && l.Date.Month == DateTime.Now.Month && l.Date.Day == DateTime.Now.Day
+                                select new
+                                {
+                                    cs.Price
+                                }).ToList();
+                decimal? tongtien = 0;
+                foreach (var x in summoney)
+                {
+                    tongtien += x.Price;
+                }
+
+                StringBuilder str = new StringBuilder();
+                str.Append("Số tiền phải thu trong ngày " + DateTime.Now.Date.ToShortDateString() + " : " + k.ToString());
+                ViewBag.Message = str.ToString();
 
                 return View(list);
             }
@@ -783,6 +815,7 @@ namespace CamDoAnhTu.Controllers
         {
             Customer model = new Customer();
             model.type = type;
+            ViewBag.type = type;
             return View();
         }
 
@@ -799,10 +832,16 @@ namespace CamDoAnhTu.Controllers
                 model.DayPaids = 0;
                 model.AmountPaid = 0;
                 model.RemainingAmount = 0;
+                model.IsEven = false;
+
+                if (Int32.Parse(model.Code[model.Code.Length - 1].ToString()) % 2 == 0)
+                {
+                    model.IsEven = true;
+                }
 
                 if ((model.Code[0] >= 'A' && model.Code[0] <= 'Z') || (model.Code[0] >= 'a' && model.Code[0] <= 'z') && model.CodeSort == null)
                 {
-                    int code = Int32.Parse(model.Code.Substring(1, model.Code.Length - 1));
+                    int code = Int32.Parse(Regex.Match(model.Code, @"\d+").Value);
 
                     if (model.Code[0] == 'A')
                     {
@@ -969,8 +1008,9 @@ namespace CamDoAnhTu.Controllers
 
         #region UpdateCustomer
 
-        public ActionResult Update(string id)
+        public ActionResult Update(string id, int? type)
         {
+            ViewBag.type = type.Value;
             using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
             {
                 update = 0;
@@ -1430,6 +1470,7 @@ namespace CamDoAnhTu.Controllers
 
         public ActionResult TimKiemNoKhachHang(int type)
         {
+            ViewBag.type = type;
             return View();
 
             using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
@@ -1460,6 +1501,9 @@ namespace CamDoAnhTu.Controllers
 
         public ActionResult TimKiemNoKhachHang1(int type)
         {
+            ViewBag.type = type;
+            return View();
+
             using (CamdoAnhTuEntities1 ctx = new CamdoAnhTuEntities1())
             {
                 int result;
@@ -1484,8 +1528,6 @@ namespace CamDoAnhTu.Controllers
                 return View(lst1);
             }
         }
-
-       
 
         public ActionResult TimKiemNoKhachHangEvenXE1()
         {

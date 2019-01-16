@@ -38,6 +38,7 @@ namespace CamDoAnhTu.Models
         public string Note { get; set; }
         public Nullable<int> CodeSort { get; set; }
         public Nullable<int> type { get; set; }
+        public Nullable<bool> IsEven { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Loan> Loans { get; set; }

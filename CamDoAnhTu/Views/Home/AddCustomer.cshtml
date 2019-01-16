@@ -5,6 +5,7 @@
 @{
     ViewBag.Title = "AddCustomer";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int type = (int)ViewBag.type;
 }
 
 @section css{
@@ -241,7 +242,7 @@
             <button type="submit" class="btn btn-danger">
                 <i class="fa fa-check"></i>&nbsp;Lưu
             </button>
-            <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+            <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home", new {type = type })" role="button">
                 <i class="fa fa-mail-reply"></i>Trang khách hàng
             </a>
         </div>

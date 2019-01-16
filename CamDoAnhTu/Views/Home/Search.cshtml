@@ -318,7 +318,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModal"><i class="fa fa-plus"></i>  Thêm</button>*@
-                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home", new {type = type })" role="button">
                         <i class="fa fa-home"></i>Trang chủ
                     </a>
                     <a class="btn btn-success" href="@Url.Action("Refresh","Home")" role="button" onclick="return confirm('Bạn có thật sự muốn refresh ?')">
@@ -338,6 +338,7 @@
                     </a>
                 </div>
                 <form class="navbar-form navbar-left" role="search" action="/Home/Search" style="height:50px">
+                    <input type="hidden" value="@type" name="type" id="type" />
                     <div class="form-group">
                         <label for="txtName" class="col-sm-2 control-label">Mã số:</label>
                         <div class="col-sm-2">
@@ -433,7 +434,7 @@ else
             <div class="panel panel-default">
                 <div class="panel-heading">
                     @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addProductsModal"><i class="fa fa-plus"></i>  Thêm</button>*@
-                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home")" role="button">
+                    <a class="btn btn-success" href="@Url.Action("LoadCustomer","Home", new { type = type})" role="button">
                         <i class="fa fa-home"></i>Trang chủ
                     </a>
                     <a class="btn btn-success" href="@Url.Action("Refresh","Home")" role="button" onclick="return confirm('Bạn có thật sự muốn refresh ?')">
@@ -453,6 +454,7 @@ else
                     </a>
                 </div>
                 <form class="form-horizontal" role="search" action="/Home/Search" style="height:50px; margin-bottom:50px;margin-top:10px">
+                    <input type="hidden" value="@type" name="type" id="type" />
                     <div class="form-group">
                         <label for="txtName" class="col-sm-2 control-label">Tên khách hàng:</label>
                         <div class="col-sm-2">

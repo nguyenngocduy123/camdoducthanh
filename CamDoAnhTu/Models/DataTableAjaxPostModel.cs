@@ -15,6 +15,10 @@ namespace CamDoAnhTu.Models
         public List<Column> columns { get; set; }
         public Search search { get; set; }
         public List<Order> order { get; set; }
+        public int? type { get; set; }
+        public bool iseven { get; set; }
+        public string max { get; set; }
+        public string min { get; set; }
     }
 
     public class Column
